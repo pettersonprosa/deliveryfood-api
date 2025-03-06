@@ -10,6 +10,7 @@ import java.util.Optional;
 @Repository
 public interface CozinhaRepository extends JpaRepository<Cozinha, Long> {
 
-    List<Cozinha> nome(String nome);
+    List<Cozinha> findTodasByNomeContaining(String nome); // coloca o "like %nome%
+
     Optional<Cozinha> findByNome(String nome);
 }
