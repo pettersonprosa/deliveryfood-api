@@ -1,30 +1,25 @@
-INSERT INTO cozinha (id, nome) VALUES (1, 'Tailandesa');
-INSERT INTO cozinha (id, nome) VALUES (2, 'Indiana');
-INSERT INTO cozinha (id, nome) VALUES (3, 'Italiana');
-INSERT INTO cozinha (id, nome) VALUES (4, 'Mexicana');
-INSERT INTO cozinha (id, nome) VALUES (5, 'Chinesa');
+insert into cozinha (id, nome) values (1, 'Tailandesa');
+insert into cozinha (id, nome) values (2, 'Indiana');
 
-INSERT INTO restaurante (nome, taxa_frete, cozinha_id) VALUES ('Lisboa', 6.31, 1);
-INSERT INTO restaurante (nome, taxa_frete, cozinha_id) VALUES ('Penina', 4.22, 2);
-INSERT INTO restaurante (nome, taxa_frete) VALUES ('Cheiro Verde', 4.22);
-INSERT INTO restaurante (nome, taxa_frete) VALUES ('Zetel', 4.22);
-INSERT INTO restaurante (nome, taxa_frete) VALUES ('Miranda', 0.0);
+insert into restaurante (id, nome, taxa_frete, cozinha_id) values (1, 'Thai Gourmet', 10, 1);
+insert into restaurante (id, nome, taxa_frete, cozinha_id) values (2, 'Thai Delivery', 9.50, 1);
+insert into restaurante (id, nome, taxa_frete, cozinha_id) values (3, 'Tuk Tuk Comida Indiana', 15, 2);
 
-INSERT INTO forma_pagamento (descricao) VALUES ("dinheiro");
-INSERT INTO forma_pagamento (descricao) VALUES ("pix");
-INSERT INTO forma_pagamento (descricao) VALUES ("credito");
+insert into estado (id, nome) values (1, 'Minas Gerais');
+insert into estado (id, nome) values (2, 'São Paulo');
+insert into estado (id, nome) values (3, 'Ceará');
 
-INSERT INTO estado (id, nome) VALUES (1, "Santa Catarina");
-INSERT INTO estado (id, nome) VALUES (2, "São Paulo");
-INSERT INTO estado (id, nome) VALUES (3, "Rio de Janeiro");
-INSERT INTO estado (id, nome) VALUES (4, "Pernambuco");
-INSERT INTO estado (id, nome) VALUES (5, "Paraná");
+insert into cidade (id, nome, estado_id) values (1, 'Uberlândia', 1);
+insert into cidade (id, nome, estado_id) values (2, 'Belo Horizonte', 1);
+insert into cidade (id, nome, estado_id) values (3, 'São Paulo', 2);
+insert into cidade (id, nome, estado_id) values (4, 'Campinas', 2);
+insert into cidade (id, nome, estado_id) values (5, 'Fortaleza', 3);
 
-INSERT INTO cidade (nome, estado_id) VALUES ("Florianópolis", 1);
-INSERT INTO cidade (nome, estado_id) VALUES ("São José dos Campos", 2);
-INSERT INTO cidade (nome, estado_id) VALUES ("Palhoça", 1);
+insert into forma_pagamento (id, descricao) values (1, 'Cartão de crédito');
+insert into forma_pagamento (id, descricao) values (2, 'Cartão de débito');
+insert into forma_pagamento (id, descricao) values (3, 'Dinheiro');
 
-INSERT INTO permissao (id, nome, descricao) VALUES (1, 'CONSULTAR_COZINHAS', 'Permite consultar cozinhas');
-INSERT INTO permissao (id, nome, descricao) VALUES (2, 'EDITAR_COZINHAS', 'Permite editar cozinhas');
+insert into permissao (id, nome, descricao) values (1, 'CONSULTAR_COZINHAS', 'Permite consultar cozinhas');
+insert into permissao (id, nome, descricao) values (2, 'EDITAR_COZINHAS', 'Permite editar cozinhas');
 
-INSERT INTO restaurante_forma_pagamento (restaurante_id, forma_pagamento_id) VALUES (1, 1), (1, 2), (1, 3), (2, 3), (3, 2), (3, 3);
+insert into restaurante_forma_pagamento (restaurante_id, forma_pagamento_id) values (1, 1), (1, 2), (1, 3), (2, 3), (3, 2), (3, 3);
