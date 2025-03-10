@@ -8,6 +8,7 @@ INSERT INTO restaurante (nome, taxa_frete, cozinha_id) VALUES ('Lisboa', 6.31, 1
 INSERT INTO restaurante (nome, taxa_frete, cozinha_id) VALUES ('Penina', 4.22, 2);
 INSERT INTO restaurante (nome, taxa_frete) VALUES ('Cheiro Verde', 4.22);
 INSERT INTO restaurante (nome, taxa_frete) VALUES ('Zetel', 4.22);
+INSERT INTO restaurante (nome, taxa_frete) VALUES ('Miranda', 0.0);
 
 INSERT INTO forma_pagamento (descricao) VALUES ("dinheiro");
 INSERT INTO forma_pagamento (descricao) VALUES ("pix");
