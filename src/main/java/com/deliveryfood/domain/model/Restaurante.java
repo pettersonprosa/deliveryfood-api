@@ -29,6 +29,9 @@ public class Restaurante {
     @JoinColumn(name="cozinha_id", nullable = false) // o "name" por padrão é <nome_variavel>_id, ou seja, ficaria cozinha_id. Nesse caso, então poderia deixar só @JoinColumn
     private Cozinha cozinha;
 
+    @Embedded
+    private Endereco endereco;
+
     @JsonIgnore
     @ManyToMany
     @JoinTable(name = "restaurante_forma_pagamento",
