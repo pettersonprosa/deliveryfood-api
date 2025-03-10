@@ -23,6 +23,6 @@ public class Restaurante {
     private BigDecimal taxaFrete;
 
     @ManyToOne
-//    @JoinColumn(name="cozinha_id", nullable = false) // o "name" por padrão é <nome_variavel>_id, ou seja, ficaria cozinha_id. Nesse caso, então poderia deixar só @JoinColumn
+    @JoinColumn(name="cozinha_id", nullable = false) // o "name" por padrão é <nome_variavel>_id, ou seja, ficaria cozinha_id. Nesse caso, então poderia deixar só @JoinColumn
     private Cozinha cozinha;
 }
