@@ -1,6 +1,7 @@
 package com.deliveryfood.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,7 +29,9 @@ public class Restaurante {
     @Column(name = "taxa_frete", nullable = false)
     private BigDecimal taxaFrete;
 
-    @ManyToOne
+//    @JsonIgnore
+    @JsonIgnoreProperties("hibernateLazyInitializer")
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="cozinha_id", nullable = false) // o "name" por padrão é <nome_variavel>_id, ou seja, ficaria cozinha_id. Nesse caso, então poderia deixar só @JoinColumn
     private Cozinha cozinha;
 
