@@ -13,7 +13,7 @@ import java.util.List;
 public interface RestauranteRepository extends CustomJpaRepository<Restaurante, Long>, RestauranteRepositoryQueries,
         JpaSpecificationExecutor<Restaurante> {
 
-    @Query("FROM Restaurante r JOIN FETCH r.cozinha JOIN FETCH r.formasPagamento")
+    @Query("FROM Restaurante r JOIN FETCH r.cozinha")
     List<Restaurante> findAll();
 
     List<Restaurante> findByTaxaFreteBetween(BigDecimal taxaInicial, BigDecimal taxaFinal);
