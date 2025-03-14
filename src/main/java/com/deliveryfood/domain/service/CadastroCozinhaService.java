@@ -1,7 +1,7 @@
 package com.deliveryfood.domain.service;
 
+import com.deliveryfood.domain.exception.CozinhaNaoEncontradaException;
 import com.deliveryfood.domain.exception.EntidadeEmUsoException;
-import com.deliveryfood.domain.exception.EntidadeNaoEncontradaException;
 import com.deliveryfood.domain.model.Cozinha;
 import com.deliveryfood.domain.repository.CozinhaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +24,7 @@ public class CadastroCozinhaService {
     public void excluir(Long cozinhaId) {
 
         if (!cozinhaRepository.existsById(cozinhaId)) {
-            throw new EntidadeNaoEncontradaException(
-                    String.format(MSG_COZINHA_NAO_ENCONTRADA, cozinhaId));
+            throw new CozinhaNaoEncontradaException(cozinhaId);
         }
 
         try {
@@ -38,7 +37,6 @@ public class CadastroCozinhaService {
 
     public Cozinha buscarOuFalha(Long cozinhaId) {
         return cozinhaRepository.findById(cozinhaId)
-                .orElseThrow(() -> new EntidadeNaoEncontradaException(
-                        String.format(MSG_COZINHA_NAO_ENCONTRADA, cozinhaId)));
+                .orElseThrow(() -> new CozinhaNaoEncontradaException(cozinhaId));
     }
 }

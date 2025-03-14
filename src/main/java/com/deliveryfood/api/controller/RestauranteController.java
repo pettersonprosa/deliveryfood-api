@@ -1,6 +1,6 @@
 package com.deliveryfood.api.controller;
 
-import com.deliveryfood.domain.exception.EntidadeNaoEncontradaException;
+import com.deliveryfood.domain.exception.CozinhaNaoEncontradaException;
 import com.deliveryfood.domain.exception.NegocioException;
 import com.deliveryfood.domain.model.Restaurante;
 import com.deliveryfood.domain.repository.RestauranteRepository;
@@ -41,7 +41,7 @@ public class RestauranteController {
     public Restaurante adicionar(@RequestBody Restaurante restaurante) {
         try {
             return cadastroRestaurante.salvar(restaurante);
-        } catch (EntidadeNaoEncontradaException e) {
+        } catch (CozinhaNaoEncontradaException e) {
             throw new NegocioException(e.getMessage());
         }
     }
@@ -54,7 +54,7 @@ public class RestauranteController {
                 "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
         try {
             return cadastroRestaurante.salvar(restauranteAtual);
-        } catch (EntidadeNaoEncontradaException e) {
+        } catch (CozinhaNaoEncontradaException e) {
             throw new NegocioException(e.getMessage());
         }
     }

@@ -1,7 +1,6 @@
 package com.deliveryfood.domain.service;
 
 import com.deliveryfood.domain.exception.EntidadeEmUsoException;
-import com.deliveryfood.domain.exception.EntidadeNaoEncontradaException;
 import com.deliveryfood.domain.exception.EstadoNaoEncontradoException;
 import com.deliveryfood.domain.model.Estado;
 import com.deliveryfood.domain.repository.EstadoRepository;
