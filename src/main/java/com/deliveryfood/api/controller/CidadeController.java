@@ -1,7 +1,5 @@
 package com.deliveryfood.api.controller;
 
-import com.deliveryfood.api.exceptionhandler.Problema;
-import com.deliveryfood.domain.exception.EntidadeNaoEncontradaException;
 import com.deliveryfood.domain.exception.EstadoNaoEncontradoException;
 import com.deliveryfood.domain.exception.NegocioException;
 import com.deliveryfood.domain.model.Cidade;
@@ -10,11 +8,8 @@ import com.deliveryfood.domain.service.CadastroCidadeService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -64,25 +59,6 @@ public class CidadeController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remover(@PathVariable Long cidadeId) {
         cadastroCidade.excluir(cidadeId);
-    }
-
-    @ExceptionHandler(EntidadeNaoEncontradaException.class)
-    public ResponseEntity<?> tratarEstadoNaoEncontradoException(EntidadeNaoEncontradaException e) {
-        Problema problema = Problema.builder()
-                .dataHora(LocalDateTime.now())
-                .mensagem(e.getMessage()).build();
-
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problema);
-    }
-
-    @ExceptionHandler(NegocioException.class)
-    public ResponseEntity<?> tratarEstadoNaoEncontradoException(NegocioException e) {
-        Problema problema = Problema.builder()
-                .dataHora(LocalDateTime.now())
-                .mensagem(e.getMessage()).build();
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problema);
     }
 
 }
