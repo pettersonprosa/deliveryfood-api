@@ -1,6 +1,6 @@
 package com.deliveryfood.api.controller;
 
-import com.deliveryfood.domain.exception.EntidadeNaoEncontradaException;
+import com.deliveryfood.domain.exception.EstadoNaoEncontradoException;
 import com.deliveryfood.domain.exception.NegocioException;
 import com.deliveryfood.domain.model.Cidade;
 import com.deliveryfood.domain.repository.CidadeRepository;
@@ -37,8 +37,8 @@ public class CidadeController {
     public Cidade adicionar(@RequestBody Cidade cidade) {
         try {
             return cadastroCidade.salvar(cidade);
-        } catch (EntidadeNaoEncontradaException e) {
-            throw new NegocioException(e.getMessage());
+        } catch (EstadoNaoEncontradoException e) {
+            throw new NegocioException(e.getMessage(), e);
         }
     }
 
@@ -50,8 +50,8 @@ public class CidadeController {
 
         try {
             return cadastroCidade.salvar(cidadeAtual);
-        } catch (EntidadeNaoEncontradaException e) {
-            throw new NegocioException(e.getMessage());
+        } catch (EstadoNaoEncontradoException e) {
+            throw new NegocioException(e.getMessage(), e);
         }
     }
 
