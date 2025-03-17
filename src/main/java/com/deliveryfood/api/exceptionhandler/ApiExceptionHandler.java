@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -14,6 +15,17 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+
+        ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
+        String detail = "O corpo da requisição está inválido. Verifique erro de sintaxae.";
+
+        Problem problem = createProblemBuilder(status, problemType, detail).build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+    }
 
     @ExceptionHandler(EntidadeNaoEncontradaException.class)
     public ResponseEntity<?> handleEntidadeNaoEncontradaException(EntidadeNaoEncontradaException ex, WebRequest request) {
@@ -23,13 +35,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         String detail = ex.getMessage();
 
         Problem problem = createProblemBuilder(status, problemType, detail).build();
-
-//        Problem problem = Problem.builder()
-//                .status(status.value())
-//                .type("https://deliveryfood.com.br/entidade-nao-encontrada")
-//                .title("Entidade não encontrada")
-//                .detail(detail)
-//                .build();
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
@@ -71,7 +76,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return super.handleExceptionInternal(ex, body, headers, statusCode, request);
     }
 
-    private Problem.ProblemBuilder createProblemBuilder(HttpStatus status, ProblemType problemType, String detail) {
+    private Problem.ProblemBuilder createProblemBuilder(HttpStatusCode status, ProblemType problemType, String detail) {
 
         return Problem.builder()
                 .status(status.value())

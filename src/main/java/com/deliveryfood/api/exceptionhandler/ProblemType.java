@@ -5,6 +5,7 @@ import lombok.Getter;
 @Getter
 public enum ProblemType {
 
+    MENSAGEM_INCOMPREENSIVEL("/mensagem-incompreensivel", "Mensagem incompreensível"),
     ENTIDADE_NAO_ENCONTRADA("/entidade-nao-encontrada", "Entidade não encontrada"),
     ENTIDADE_EM_USO("/entidade-em-uso", "Entidade em uso"),
     ERRO_NEGOCIO("/erro-negocio", "Violação de regra de negócio");
@@ -12,8 +13,8 @@ public enum ProblemType {
     private String title;
     private String uri;
 
-    ProblemType(String title, String path) {
+    ProblemType(String path, String title) {
         this.title = title;
-        this.uri = "https://deliveryfood.com.br " + path;
+        this.uri = "https://deliveryfood.com.br" + path;
     }
 }
