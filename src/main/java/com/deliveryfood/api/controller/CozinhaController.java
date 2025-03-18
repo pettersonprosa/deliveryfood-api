@@ -3,6 +3,7 @@ package com.deliveryfood.api.controller;
 import com.deliveryfood.domain.model.Cozinha;
 import com.deliveryfood.domain.repository.CozinhaRepository;
 import com.deliveryfood.domain.service.CadastroCozinhaService;
+import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,7 @@ public class CozinhaController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Cozinha adicionar(@RequestBody Cozinha cozinha) {
+    public Cozinha adicionar(@RequestBody @Valid Cozinha cozinha) {
         return cadastroCozinha.salvar(cozinha);
     }
 
