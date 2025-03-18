@@ -1,6 +1,6 @@
 package com.deliveryfood.domain.model;
 
-import com.deliveryfood.Groups;
+import com.deliveryfood.core.validation.Groups;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
@@ -32,7 +32,7 @@ public class Restaurante {
     private String nome;
 
     @NotNull
-    @PositiveOrZero(message = "{TaxaFrete.invalida}")
+    @PositiveOrZero
     @Column(name = "taxa_frete", nullable = false)
     private BigDecimal taxaFrete;
 

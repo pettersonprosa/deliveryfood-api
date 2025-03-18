@@ -1,6 +1,6 @@
 package com.deliveryfood.domain.model;
 
-import com.deliveryfood.Groups;
+import com.deliveryfood.core.validation.Groups;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
