@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+import jakarta.validation.groups.ConvertGroup;
+import jakarta.validation.groups.Default;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
@@ -25,16 +27,17 @@ public class Restaurante {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(groups = Groups.CadastroRestaurante.class)
+    @NotBlank
     @Column(nullable = false)
     private String nome;
 
-    @PositiveOrZero(groups = Groups.CadastroRestaurante.class)
+    @PositiveOrZero
     @Column(name = "taxa_frete", nullable = false)
     private BigDecimal taxaFrete;
 
     @Valid
-    @NotNull(groups = Groups.CadastroRestaurante.class)
+    @ConvertGroup(from = Default.class, to = Groups.CozinhaId.class)
+    @NotNull
     @ManyToOne//(fetch = FetchType.LAZY)
     @JoinColumn(name="cozinha_id", nullable = false) // o "name" por padrão é <nome_variavel>_id, ou seja, ficaria cozinha_id. Nesse caso, então poderia deixar só @JoinColumn
     private Cozinha cozinha;
