@@ -1,7 +1,7 @@
 package com.deliveryfood.domain.model;
 
 import com.deliveryfood.core.validation.Groups;
-import com.deliveryfood.core.validation.TaxaFrete;
+import com.deliveryfood.core.validation.Multiplo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
@@ -33,7 +33,8 @@ public class Restaurante {
     private String nome;
 
     @NotNull
-    @TaxaFrete
+    @PositiveOrZero
+    @Multiplo(numero = 5)
     @Column(name = "taxa_frete", nullable = false)
     private BigDecimal taxaFrete;
 
