@@ -15,7 +15,7 @@ import com.deliveryfood.domain.service.CadastroCozinhaService;
 import jakarta.validation.ConstraintViolationException;
 
 @SpringBootTest
-class CadastroCozinhaIntegrationTests {
+class CadastroCozinhaIT {
 
     @Autowired
     private CadastroCozinhaService cadastroCozinha;
