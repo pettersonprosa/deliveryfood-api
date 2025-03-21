@@ -14,6 +14,7 @@ import org.springframework.test.context.TestPropertySource;
 import com.deliveryfood.domain.model.Cozinha;
 import com.deliveryfood.domain.repository.CozinhaRepository;
 import com.deliveryfood.util.DatabaseCleaner;
+import com.deliveryfood.util.ResourceUtils;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -31,6 +32,13 @@ class CadastroCozinhaIT {
     @Autowired
     private CozinhaRepository cozinhaRepository;
 
+    private static final int COZINHA_ID_INEXISTENTE = Integer.MAX_VALUE;
+    
+    private int quantidadeCozinhasCadastradas;
+    private Cozinha cozinhaAmericana;
+    private String jsonCorretoCozinhaChinesa;
+
+
     @BeforeEach
     public void setUp(){
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
@@ -39,6 +47,9 @@ class CadastroCozinhaIT {
 
         databaseCleaner.clearTables();
         prepararDados();
+        
+        jsonCorretoCozinhaChinesa = ResourceUtils.getContentFromResource(
+            "/json/correto/cozinha-chinesa.json");
     }
 
     @Test
@@ -51,20 +62,22 @@ class CadastroCozinhaIT {
             .statusCode(HttpStatus.OK.value());
     }
 
+    //TODO Rever desafio
     @Test
-    public void deveConter2Cozinhas_QuandoConsultarCozinhas() {
+    public void deveRetornarQuantidadeCorretaDeCozinhas_QuandoConsultarCozinhas() {
         given()
             .accept(ContentType.JSON)
         .when()
             .get()
         .then()
-            .body("", Matchers.hasSize(2));
+            .body("", Matchers.hasSize(quantidadeCozinhasCadastradas));
     }
 
+    //TODO Rever desadio
     @Test
-	public void testRetornarStatus201_QuandoCadastrarCozinha() {
+	public void deveRetornarStatus201_QuandoCadastrarCozinha() {
 		given()
-			.body("{ \"nome\": \"Chinesa\" }")
+			.body(jsonCorretoCozinhaChinesa)
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
 		.when()
@@ -73,10 +86,11 @@ class CadastroCozinhaIT {
 			.statusCode(HttpStatus.CREATED.value());
 	}
 
+    //TODO erro
     @Test
 	public void deveRetornarRespostaEStatusCorretos_QuandoConsultarCozinhaExistente() {
 		given()
-			.pathParam("cozinhaId", 2)
+			.pathParam("cozinhaId", cozinhaAmericana.getId())
 			.accept(ContentType.JSON)
 		.when()
 			.get("/{cozinhaId}")
@@ -85,10 +99,11 @@ class CadastroCozinhaIT {
 			.body("nome", Matchers.equalTo("Americana"));
 	}
 
+    //TODO 
     @Test
     public void deveRetornarStatus404_QuandoConsultarCozinhaInexistente() {
         given()
-            .pathParam("cozinhaId", 999)
+            .pathParam("cozinhaId", COZINHA_ID_INEXISTENTE)
             .accept(ContentType.JSON)
         .when()
             .get("/{cozinhaId}")
@@ -103,7 +118,9 @@ class CadastroCozinhaIT {
         
         Cozinha cozinha2 = new Cozinha();
         cozinha2.setNome("Americana");
-        cozinhaRepository.save(cozinha2);
+        cozinhaAmericana = cozinhaRepository.save(cozinha2);
+        
+        quantidadeCozinhasCadastradas = (int) cozinhaRepository.count();
     }
 
 }
