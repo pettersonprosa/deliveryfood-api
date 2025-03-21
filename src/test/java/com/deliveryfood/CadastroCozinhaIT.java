@@ -62,7 +62,6 @@ class CadastroCozinhaIT {
             .statusCode(HttpStatus.OK.value());
     }
 
-    //TODO Rever desafio
     @Test
     public void deveRetornarQuantidadeCorretaDeCozinhas_QuandoConsultarCozinhas() {
         given()
@@ -73,7 +72,6 @@ class CadastroCozinhaIT {
             .body("", Matchers.hasSize(quantidadeCozinhasCadastradas));
     }
 
-    //TODO Rever desadio
     @Test
 	public void deveRetornarStatus201_QuandoCadastrarCozinha() {
 		given()
@@ -86,7 +84,6 @@ class CadastroCozinhaIT {
 			.statusCode(HttpStatus.CREATED.value());
 	}
 
-    //TODO erro
     @Test
 	public void deveRetornarRespostaEStatusCorretos_QuandoConsultarCozinhaExistente() {
 		given()
@@ -99,7 +96,6 @@ class CadastroCozinhaIT {
 			.body("nome", Matchers.equalTo("Americana"));
 	}
 
-    //TODO 
     @Test
     public void deveRetornarStatus404_QuandoConsultarCozinhaInexistente() {
         given()
