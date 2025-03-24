@@ -1,7 +1,6 @@
 package com.deliveryfood.api.model.mixin;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.deliveryfood.domain.model.Cozinha;
@@ -12,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 public abstract class RestauranteMixin {
+    
     @JsonIgnoreProperties(value = "nome", allowGetters = true)
     private Cozinha cozinha;
 
@@ -25,8 +25,8 @@ public abstract class RestauranteMixin {
     private LocalDateTime dataAtualizacao;
 
     @JsonIgnore
-    private List<FormaPagamento> formasPagamento = new ArrayList<>();
+    private List<FormaPagamento> formasPagamento;
 
     @JsonIgnore
-    private List<Produto> produtos = new ArrayList<>();
+    private List<Produto> produtos;
 }
