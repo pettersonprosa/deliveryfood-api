@@ -1,5 +1,6 @@
 package com.deliveryfood.api.controller;
 
+import com.deliveryfood.api.model.RestauranteModel;
 import com.deliveryfood.core.validation.ValidacaoException;
 import com.deliveryfood.domain.exception.CozinhaNaoEncontradaException;
 import com.deliveryfood.domain.exception.NegocioException;
@@ -44,8 +45,12 @@ public class RestauranteController {
     }
 
     @GetMapping({"/{restauranteId}"})
-    public Restaurante buscar(@PathVariable Long restauranteId) {
-        return cadastroRestaurante.buscarOuFalhar(restauranteId);
+    public RestauranteModel buscar(@PathVariable Long restauranteId) {
+        Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(restauranteId);
+
+        RestauranteModel restauranteModel = null; // conversao
+
+        return restauranteModel;
     }
 
     @PostMapping
