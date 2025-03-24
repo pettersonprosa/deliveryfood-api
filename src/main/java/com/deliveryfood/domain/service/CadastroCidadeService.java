@@ -8,6 +8,7 @@ import com.deliveryfood.domain.repository.CidadeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CadastroCidadeService {
@@ -20,6 +21,7 @@ public class CadastroCidadeService {
     @Autowired
     private CadastroEstadoService cadastroEstado;
 
+    @Transactional
     public Cidade salvar(Cidade cidade){
         Long estadoId = cidade.getEstado().getId();
 
@@ -29,6 +31,7 @@ public class CadastroCidadeService {
         return cidadeRepository.save(cidade);
     }
 
+    @Transactional
     public void excluir(Long cidadeId){
 
         if (!cidadeRepository.existsById(cidadeId)) {
