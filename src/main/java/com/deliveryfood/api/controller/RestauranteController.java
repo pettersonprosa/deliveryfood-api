@@ -1,6 +1,20 @@
 package com.deliveryfood.api.controller;
 
-import com.deliveryfood.api.model.CozinhaModel;
+import java.util.List;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.deliveryfood.api.assembler.RestauranteModelAssembler;
 import com.deliveryfood.api.model.RestauranteModel;
 import com.deliveryfood.api.model.input.RestauranteInput;
 import com.deliveryfood.domain.exception.CozinhaNaoEncontradaException;
@@ -9,15 +23,8 @@ import com.deliveryfood.domain.model.Cozinha;
 import com.deliveryfood.domain.model.Restaurante;
 import com.deliveryfood.domain.repository.RestauranteRepository;
 import com.deliveryfood.domain.service.CadastroRestauranteService;
-import jakarta.validation.Valid;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.validation.SmartValidator;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/restaurantes")
@@ -30,18 +37,18 @@ public class RestauranteController {
     private CadastroRestauranteService cadastroRestaurante;
 
     @Autowired
-    private SmartValidator validator;
+    private RestauranteModelAssembler restauranteModelAssembler;
 
     @GetMapping
     public List<RestauranteModel> listar() {
-        return toCollectionModel(restauranteRepository.findAll());
+        return restauranteModelAssembler.toCollectionModel(restauranteRepository.findAll());
     }
 
     @GetMapping({ "/{restauranteId}" })
     public RestauranteModel buscar(@PathVariable Long restauranteId) {
         Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(restauranteId);
 
-        return toModel(restaurante);
+        return restauranteModelAssembler.toModel(restaurante);
     }
 
     @PostMapping
@@ -50,7 +57,7 @@ public class RestauranteController {
         try {
             Restaurante restaurante = toDomainObject(restauranteInput);
             
-            return toModel(cadastroRestaurante.salvar(restaurante));
+            return restauranteModelAssembler.toModel(cadastroRestaurante.salvar(restaurante));
         } catch (CozinhaNaoEncontradaException e) {
             throw new NegocioException(e.getMessage());
         }
@@ -66,29 +73,10 @@ public class RestauranteController {
         BeanUtils.copyProperties(restaurante, restauranteAtual,
                 "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
         try {
-            return toModel(cadastroRestaurante.salvar(restauranteAtual));
+            return restauranteModelAssembler.toModel(cadastroRestaurante.salvar(restauranteAtual));
         } catch (CozinhaNaoEncontradaException e) {
             throw new NegocioException(e.getMessage());
         }
-    }
-
-    private RestauranteModel toModel(Restaurante restaurante) {
-        CozinhaModel cozinhaModel = new CozinhaModel();
-        cozinhaModel.setId(restaurante.getCozinha().getId());
-        cozinhaModel.setNome(restaurante.getCozinha().getNome());
-
-        RestauranteModel restauranteModel = new RestauranteModel();
-        restauranteModel.setId(restaurante.getId());
-        restauranteModel.setNome(restaurante.getNome());
-        restauranteModel.setTaxaFrete(restaurante.getTaxaFrete());
-        restauranteModel.setCozinha(cozinhaModel);
-        return restauranteModel;
-    }
-
-    private List<RestauranteModel> toCollectionModel(List<Restaurante> restaurantes) {
-        return restaurantes.stream()
-                .map(restaurante -> toModel(restaurante))
-                .collect(Collectors.toList());
     }
 
     private Restaurante toDomainObject(RestauranteInput restauranteInput) {
