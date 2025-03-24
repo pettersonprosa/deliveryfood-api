@@ -42,18 +42,18 @@ public class Restaurante {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    // @NotBlank
     @Column(nullable = false)
     private String nome;
 
-    @NotNull
-    @PositiveOrZero
+    // @NotNull
+    // @PositiveOrZero
     @Column(name = "taxa_frete", nullable = false)
     private BigDecimal taxaFrete;
 
-    @Valid
-    @ConvertGroup(from = Default.class, to = Groups.CozinhaId.class)
-    @NotNull
+    // @Valid
+    // @ConvertGroup(from = Default.class, to = Groups.CozinhaId.class)
+    // @NotNull
     @ManyToOne //(fetch = FetchType.LAZY)
     @JoinColumn(name="cozinha_id", nullable = false) // o "name" por padrão é <nome_variavel>_id, ou seja, ficaria cozinha_id. Nesse caso, então poderia deixar só @JoinColumn
     private Cozinha cozinha;
