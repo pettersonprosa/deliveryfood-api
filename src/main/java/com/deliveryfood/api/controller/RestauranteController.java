@@ -2,7 +2,6 @@ package com.deliveryfood.api.controller;
 
 import java.util.List;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +19,6 @@ import com.deliveryfood.api.model.RestauranteModel;
 import com.deliveryfood.api.model.input.RestauranteInput;
 import com.deliveryfood.domain.exception.CozinhaNaoEncontradaException;
 import com.deliveryfood.domain.exception.NegocioException;
-import com.deliveryfood.domain.model.Cozinha;
 import com.deliveryfood.domain.model.Restaurante;
 import com.deliveryfood.domain.repository.RestauranteRepository;
 import com.deliveryfood.domain.service.CadastroRestauranteService;
@@ -69,13 +67,11 @@ public class RestauranteController {
 
     @PutMapping("/{restauranteId}")
     public RestauranteModel atualizar(@PathVariable Long restauranteId, @RequestBody @Valid RestauranteInput restauranteInput) {
-        
-        Restaurante restaurante = restauranteInputDisassembler.toDomainObject(restauranteInput);
 
         Restaurante restauranteAtual = cadastroRestaurante.buscarOuFalhar(restauranteId);
 
-        BeanUtils.copyProperties(restaurante, restauranteAtual,
-                "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
+        restauranteInputDisassembler.copyToDomainObject(restauranteInput, restauranteAtual);
+
         try {
             return restauranteModelAssembler.toModel(cadastroRestaurante.salvar(restauranteAtual));
         } catch (CozinhaNaoEncontradaException e) {
