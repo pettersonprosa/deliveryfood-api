@@ -1,10 +1,6 @@
 package com.deliveryfood.domain.model;
 
-import com.deliveryfood.core.validation.Groups;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -22,7 +18,7 @@ public class Cozinha {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    // @NotBlank
     @Column(nullable = false)
     private String nome;
 
