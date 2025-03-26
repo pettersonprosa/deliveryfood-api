@@ -18,6 +18,7 @@ import com.deliveryfood.api.assembler.RestauranteInputDisassembler;
 import com.deliveryfood.api.assembler.RestauranteModelAssembler;
 import com.deliveryfood.api.model.RestauranteModel;
 import com.deliveryfood.api.model.input.RestauranteInput;
+import com.deliveryfood.domain.exception.CidadeNaoEncontradaException;
 import com.deliveryfood.domain.exception.CozinhaNaoEncontradaException;
 import com.deliveryfood.domain.exception.NegocioException;
 import com.deliveryfood.domain.model.Restaurante;
@@ -75,7 +76,7 @@ public class RestauranteController {
 
         try {
             return restauranteModelAssembler.toModel(cadastroRestaurante.salvar(restauranteAtual));
-        } catch (CozinhaNaoEncontradaException e) {
+        } catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
             throw new NegocioException(e.getMessage());
         }
     }

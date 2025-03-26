@@ -1,6 +1,7 @@
 package com.deliveryfood.domain.service;
 
 import com.deliveryfood.domain.exception.RestauranteNaoEncontradoException;
+import com.deliveryfood.domain.model.Cidade;
 import com.deliveryfood.domain.model.Cozinha;
 import com.deliveryfood.domain.model.Restaurante;
 import com.deliveryfood.domain.repository.RestauranteRepository;
@@ -17,12 +18,19 @@ public class CadastroRestauranteService {
     @Autowired
     private CadastroCozinhaService cadastroCozinha;
 
+    @Autowired
+    private CadastroCidadeService cadastroCidade;
+
     @Transactional
     public Restaurante salvar(Restaurante restaurante) {
         Long cozinhaId = restaurante.getCozinha().getId();
+        Long cidadeId = restaurante.getEndereco().getCidade().getId();
 
         Cozinha cozinha = cadastroCozinha.buscarOuFalha(cozinhaId);
+        Cidade cidade = cadastroCidade.buscarOuFalhar(cidadeId);
+        
         restaurante.setCozinha(cozinha);
+        restaurante.getEndereco().setCidade(cidade);
 
         return restauranteRepository.save(restaurante);
     }
