@@ -38,7 +38,7 @@ public class CadastroCozinhaService {
         }
     }
 
-    public Cozinha buscarOuFalha(Long cozinhaId) {
+    public Cozinha buscarOuFalhar(Long cozinhaId) {
         return cozinhaRepository.findById(cozinhaId)
                 .orElseThrow(() -> new CozinhaNaoEncontradaException(cozinhaId));
     }
