@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.deliveryfood.domain.exception.EntidadeEmUsoException;
 import com.deliveryfood.domain.exception.GrupoNaoEncontradoException;
 import com.deliveryfood.domain.model.Grupo;
+import com.deliveryfood.domain.model.Permissao;
 import com.deliveryfood.domain.repository.GrupoRepository;
 
 @Service
@@ -17,6 +18,9 @@ public class CadastroGrupoService {
 
     @Autowired
     private GrupoRepository grupoRepository;
+
+    @Autowired
+    private CadastroPermissaoService cadastroPermissao;
 
     @Transactional
     public Grupo salvar(Grupo grupo) {
@@ -37,6 +41,24 @@ public class CadastroGrupoService {
             throw new EntidadeEmUsoException(String.format(MSG_GRUPO_EM_USO, grupoId));
         }
     }
+
+    @Transactional
+    public void desassociarPermissao(Long grupoId, Long permissaoId) {
+        Grupo grupo = buscarOuFalhar(grupoId);
+        Permissao permissao = cadastroPermissao.buscarOuFalhar(permissaoId);
+
+        grupo.removerPermissao(permissao);
+    }
+
+    @Transactional
+    public void associarPermissao(Long grupoId, Long permissaoId) {
+        Grupo grupo = buscarOuFalhar(grupoId);
+        Permissao permissao = cadastroPermissao.buscarOuFalhar(permissaoId);
+
+        grupo.adicionarPermissao(permissao);
+    }
+
+    
 
     public Grupo buscarOuFalhar(Long grupoId) {
         return grupoRepository.findById(grupoId)
