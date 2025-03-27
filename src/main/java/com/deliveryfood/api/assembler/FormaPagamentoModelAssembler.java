@@ -1,5 +1,6 @@
 package com.deliveryfood.api.assembler;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,7 +21,7 @@ public class FormaPagamentoModelAssembler {
         return modelMapper.map(formaPagamento, FormaPagamentoModel.class);
     }
 
-    public List<FormaPagamentoModel> toCollectionModel(List<FormaPagamento> formasPagamento) {
+    public List<FormaPagamentoModel> toCollectionModel(Collection<FormaPagamento> formasPagamento) { // TODO Rever troca de List<FormaPagamento> para Collection<FormaPagamento> por causar de Set<FormaPagamento> no Restaurante
         return formasPagamento.stream()
                 .map(formaPagamento -> toModel(formaPagamento))
                 .collect(Collectors.toList());

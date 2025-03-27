@@ -1,13 +1,15 @@
 package com.deliveryfood.domain.service;
 
-import com.deliveryfood.domain.exception.RestauranteNaoEncontradoException;
-import com.deliveryfood.domain.model.Cidade;
-import com.deliveryfood.domain.model.Cozinha;
-import com.deliveryfood.domain.model.Restaurante;
-import com.deliveryfood.domain.repository.RestauranteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.deliveryfood.domain.exception.RestauranteNaoEncontradoException;
+import com.deliveryfood.domain.model.Cidade;
+import com.deliveryfood.domain.model.Cozinha;
+import com.deliveryfood.domain.model.FormaPagamento;
+import com.deliveryfood.domain.model.Restaurante;
+import com.deliveryfood.domain.repository.RestauranteRepository;
 
 @Service
 public class CadastroRestauranteService {
@@ -17,6 +19,10 @@ public class CadastroRestauranteService {
 
     @Autowired
     private CadastroCozinhaService cadastroCozinha;
+
+    // TODO rever se preciso fazer injeção abaixo
+    @Autowired
+    private CadastroFormaPagamentoService cadastroFormaPagamento;
 
     @Autowired
     private CadastroCidadeService cadastroCidade;
@@ -47,6 +53,24 @@ public class CadastroRestauranteService {
         Restaurante restauranteAtual = buscarOuFalhar(restauranteId);
 
         restauranteAtual.inativar();
+    }
+
+    @Transactional
+    public void desassociarFormaPagamento(Long restauranteId, Long formaPagamentoId) {
+        Restaurante restaurante = buscarOuFalhar(restauranteId);
+
+        FormaPagamento formaPagamento = cadastroFormaPagamento.buscarOuFalhar(formaPagamentoId);
+
+        restaurante.removerFormaPagamento(formaPagamento);
+    }
+
+    @Transactional
+    public void associarFormaPagamento(Long restauranteId, Long formaPagamentoId) {
+        Restaurante restaurante = buscarOuFalhar(restauranteId);
+
+        FormaPagamento formaPagamento = cadastroFormaPagamento.buscarOuFalhar(formaPagamentoId);
+
+        restaurante.adicionarFormaPagamento(formaPagamento);
     }
 
     public Restaurante buscarOuFalhar(Long restauranteId) {
