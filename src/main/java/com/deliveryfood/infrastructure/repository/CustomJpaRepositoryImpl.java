@@ -1,11 +1,13 @@
 package com.deliveryfood.infrastructure.repository;
 
-import com.deliveryfood.domain.repository.CustomJpaRepository;
-import jakarta.persistence.EntityManager;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
-import java.util.Optional;
+import com.deliveryfood.domain.repository.CustomJpaRepository;
+
+import jakarta.persistence.EntityManager;
 
 public class CustomJpaRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> implements CustomJpaRepository<T, ID> {
 
@@ -26,5 +28,10 @@ public class CustomJpaRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> i
                 .getSingleResult();
 
         return Optional.ofNullable(entity);
+    }
+
+    @Override
+    public void detach(T entity) {
+        manager.detach(entity);
     }
 }
