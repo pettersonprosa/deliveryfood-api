@@ -12,6 +12,7 @@ delete from permissao;
 delete from produto;
 delete from restaurante;
 delete from restaurante_forma_pagamento;
+delete from restaurante_usuario_responsavel;
 delete from usuario;
 delete from usuario_grupo;
 
