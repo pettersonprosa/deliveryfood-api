@@ -1,14 +1,18 @@
 package com.deliveryfood.api.controller;
 
+import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,6 +28,8 @@ import com.deliveryfood.domain.model.Pedido;
 import com.deliveryfood.domain.model.Usuario;
 import com.deliveryfood.domain.repository.PedidoRepository;
 import com.deliveryfood.domain.service.EmissaoPedidoService;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
 import jakarta.validation.Valid;
 
@@ -47,11 +53,36 @@ public class PedidoController {
     private PedidoInputDisassembler pedidoInputDisassembler;
 
     @GetMapping
-    public List<PedidoResumoModel> listar() {
-        List<Pedido> todosPedidos = pedidoRepository.findAll();
+    public MappingJacksonValue listar(@RequestParam(required = false) String campos) {
+        List<Pedido> pedidos = pedidoRepository.findAll();
+        List<PedidoResumoModel> pedidosModel = pedidoResumoModelAssembler.toCollectionModel(pedidos);
 
-        return pedidoResumoModelAssembler.toCollectionModel(todosPedidos);
+        MappingJacksonValue pedidosWrapper = new MappingJacksonValue(pedidosModel);
+
+        SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+        filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.serializeAll());
+
+        if (StringUtils.isNotBlank(campos)) {
+            // filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.filterOutAllExcept(
+            //     campos.split(",")));
+
+            filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.filterOutAllExcept(
+                Arrays.stream(campos.split(","))
+                        .map(String::trim)  // Remove espaços em branco antes e depois de cada campo
+                        .toArray(String[]::new)));
+        }
+
+        pedidosWrapper.setFilters(filterProvider);
+
+        return pedidosWrapper;
     }
+
+    // @GetMapping
+    // public List<PedidoResumoModel> listar() {
+    //     List<Pedido> todosPedidos = pedidoRepository.findAll();
+
+    //     return pedidoResumoModelAssembler.toCollectionModel(todosPedidos);
+    // }
 
     @GetMapping("/{codigoPedido}")
     public PedidoModel buscar(@PathVariable String codigoPedido) {
