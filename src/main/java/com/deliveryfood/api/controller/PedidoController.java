@@ -27,7 +27,9 @@ import com.deliveryfood.domain.exception.NegocioException;
 import com.deliveryfood.domain.model.Pedido;
 import com.deliveryfood.domain.model.Usuario;
 import com.deliveryfood.domain.repository.PedidoRepository;
+import com.deliveryfood.domain.repository.filter.PedidoFilter;
 import com.deliveryfood.domain.service.EmissaoPedidoService;
+import com.deliveryfood.infrastructure.repository.spec.PedidoSpecs;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
@@ -53,36 +55,11 @@ public class PedidoController {
     private PedidoInputDisassembler pedidoInputDisassembler;
 
     @GetMapping
-    public MappingJacksonValue listar(@RequestParam(required = false) String campos) {
-        List<Pedido> pedidos = pedidoRepository.findAll();
-        List<PedidoResumoModel> pedidosModel = pedidoResumoModelAssembler.toCollectionModel(pedidos);
-
-        MappingJacksonValue pedidosWrapper = new MappingJacksonValue(pedidosModel);
-
-        SimpleFilterProvider filterProvider = new SimpleFilterProvider();
-        filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.serializeAll());
-
-        if (StringUtils.isNotBlank(campos)) {
-            // filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.filterOutAllExcept(
-            //     campos.split(",")));
-
-            filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.filterOutAllExcept(
-                Arrays.stream(campos.split(","))
-                        .map(String::trim)  // Remove espaços em branco antes e depois de cada campo
-                        .toArray(String[]::new)));
-        }
-
-        pedidosWrapper.setFilters(filterProvider);
-
-        return pedidosWrapper;
+    public List<PedidoResumoModel> pesquisar(PedidoFilter filtro) {
+        List<Pedido> todosPedidos = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(filtro));
+        
+        return pedidoResumoModelAssembler.toCollectionModel(todosPedidos);
     }
-
-    // @GetMapping
-    // public List<PedidoResumoModel> listar() {
-    //     List<Pedido> todosPedidos = pedidoRepository.findAll();
-
-    //     return pedidoResumoModelAssembler.toCollectionModel(todosPedidos);
-    // }
 
     @GetMapping("/{codigoPedido}")
     public PedidoModel buscar(@PathVariable String codigoPedido) {
