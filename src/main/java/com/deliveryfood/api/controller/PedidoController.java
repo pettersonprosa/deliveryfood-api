@@ -32,8 +32,6 @@ import com.deliveryfood.domain.repository.PedidoRepository;
 import com.deliveryfood.domain.repository.filter.PedidoFilter;
 import com.deliveryfood.domain.service.EmissaoPedidoService;
 import com.deliveryfood.infrastructure.repository.spec.PedidoSpecs;
-import com.google.common.collect.ImmutableMap;
-
 import jakarta.validation.Valid;
 
 @RestController
@@ -97,11 +95,17 @@ public class PedidoController {
 
     private Pageable traduzirPageable(Pageable apiPageable) {
         //tambem é possível fazer usando o Map.of()
-        var mapeamento = ImmutableMap.of(
-            "codigo", "codigo",
-            "restaurante.nome", "restaurante.nome",
-            "nomeCliente", "cliente.nome",
-            "valorTotal", "valorTotal"
+        var mapeamento = Map.of(
+                "codigo", "codigo",
+				"subtotal", "subtotal",
+				"taxaFrete", "taxaFrete",
+				"valorTotal", "valorTotal",
+				"dataCriacao", "dataCriacao",
+				"restaurante.nome", "restaurante.nome",
+				"restaurante.id", "restaurante.id",
+				"cliente.id", "cliente.id",
+				"cliente.nome", "cliente.nome"
+
         );
 
         return PageableTranslator.translator(apiPageable, mapeamento);
