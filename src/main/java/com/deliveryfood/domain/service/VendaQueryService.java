@@ -7,6 +7,6 @@ import com.deliveryfood.domain.filter.VendaDiariaFilter;
 
 public interface VendaQueryService {
 
-    List<VendaDiaria> consultarVendaDiarias(VendaDiariaFilter filtro);
+    List<VendaDiaria> consultarVendaDiarias(VendaDiariaFilter filtro, String timeOffset);
 
 }
