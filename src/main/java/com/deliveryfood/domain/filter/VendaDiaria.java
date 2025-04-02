@@ -1,7 +1,7 @@
 package com.deliveryfood.domain.filter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,8 +12,8 @@ import lombok.Setter;
 @Setter
 public class VendaDiaria {
 
-    private LocalDate data;
-    private Long totalVenda;
+    private Date data;
+    private Long totalVendas;
     private BigDecimal totalFaturado;
 
 }

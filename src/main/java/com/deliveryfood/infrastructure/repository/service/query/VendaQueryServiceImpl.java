@@ -1,7 +1,7 @@
 package com.deliveryfood.infrastructure.repository.service.query;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -30,11 +30,11 @@ public class VendaQueryServiceImpl implements VendaQueryService {
         var root = query.from(Pedido.class);
         var predicates = new ArrayList<Predicate>();
 
-        var functionConvertTzDataCriacao = builder.function("convert_tz", LocalDate.class, 
+        var functionConvertTzDataCriacao = builder.function("convert_tz", Date.class, 
                 root.get("dataCriacao"), builder.literal("+00:00"), builder.literal(timeOffset));
 
         var functionDateDataCriacao = builder.function(
-                "date", LocalDate.class, functionConvertTzDataCriacao);
+                "date", Date.class, functionConvertTzDataCriacao);
 
         var selection = builder.construct(VendaDiaria.class, // contrua venda diaria a partir da seleção
         functionDateDataCriacao,
