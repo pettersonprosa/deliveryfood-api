@@ -28,6 +28,4 @@ public class FotoProduto {
     private String contentType;
     private Long tamanho;
 
-
-
 }
