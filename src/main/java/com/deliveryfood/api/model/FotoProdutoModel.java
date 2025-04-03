@@ -8,8 +8,11 @@ import lombok.Setter;
 public class FotoProdutoModel {
 
     private String nomeArquivo;
-    private String descricao;
-    private String contentType;
-    private Long tamanho;
     
+    private String descricao;
+    
+    private String contentType;
+    
+    private Long tamanho;
+
 }
