@@ -30,6 +30,7 @@
         <java.version>17</java.version>
         <modelmapper.version>3.2.2</modelmapper.version>
         <jasperreports.version>7.0.2</jasperreports.version>
+        <aws-java-sdk-s3.version>1.12.782</aws-java-sdk-s3.version>
     </properties>
     <dependencies>
         <dependency>
@@ -113,6 +114,12 @@
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports-pdf</artifactId>
             <version>${jasperreports.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3 -->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-s3</artifactId>
+            <version>${aws-java-sdk-s3.version}</version>
         </dependency>
         
     </dependencies>

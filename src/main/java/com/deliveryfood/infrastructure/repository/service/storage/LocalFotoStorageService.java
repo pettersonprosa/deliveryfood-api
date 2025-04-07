@@ -11,7 +11,7 @@ import org.springframework.util.FileCopyUtils;
 import com.deliveryfood.core.storage.StorageProperties;
 import com.deliveryfood.domain.service.FotoStorageService;
 
-@Service
+// @Service
 public class LocalFotoStorageService implements FotoStorageService {
 
     @Autowired
