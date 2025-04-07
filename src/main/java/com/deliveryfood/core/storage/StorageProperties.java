@@ -33,7 +33,7 @@ public class StorageProperties {
         private String chaveAcessoSecreta;
         private String bucket;
         private String regiao;
-        private String diretoriosFotos;
+        private String diretorioFotos;
         
     }
 }
