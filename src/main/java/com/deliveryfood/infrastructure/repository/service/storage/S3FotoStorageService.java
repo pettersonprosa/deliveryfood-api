@@ -10,6 +10,7 @@ import com.deliveryfood.domain.service.FotoStorageService;
 
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
@@ -62,6 +63,18 @@ public class S3FotoStorageService implements FotoStorageService {
 
     @Override
     public void remover(String nomeArquivo) {
+        try {
+            String caminhoArquivo = getCaminhoArquivo(nomeArquivo);
+
+            DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                    .bucket(storageProperties.getS3().getBucket())
+                    .key(getCaminhoArquivo(nomeArquivo))
+                    .build();
+            
+            s3Client.deleteObject(deleteObjectRequest);
+        } catch (Exception e) {
+            throw new StorageException("Não foi possível deletar arquivo na Amazon S3", e);
+        }
     }
 
 }
