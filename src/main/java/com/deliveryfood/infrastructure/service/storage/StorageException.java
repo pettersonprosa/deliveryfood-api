@@ -1,4 +1,4 @@
-package com.deliveryfood.infrastructure.repository.service.storage;
+package com.deliveryfood.infrastructure.service.storage;
 
 public class StorageException extends RuntimeException {
 

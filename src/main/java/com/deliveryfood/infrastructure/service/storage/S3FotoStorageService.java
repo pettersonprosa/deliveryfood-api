@@ -1,4 +1,4 @@
-package com.deliveryfood.infrastructure.repository.service.storage;
+package com.deliveryfood.infrastructure.service.storage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import com.deliveryfood.core.storage.StorageProperties;

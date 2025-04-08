@@ -1,4 +1,4 @@
-package com.deliveryfood.infrastructure.repository.service.query;
+package com.deliveryfood.infrastructure.service.query;
 
 import java.util.ArrayList;
 import java.util.Date;

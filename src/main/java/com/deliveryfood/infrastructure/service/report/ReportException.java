@@ -1,4 +1,4 @@
-package com.deliveryfood.infrastructure.repository.service.report;
+package com.deliveryfood.infrastructure.service.report;
 
 public class ReportException extends RuntimeException {
     

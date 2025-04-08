@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Configuration;
 
 import com.deliveryfood.core.storage.StorageProperties.TipoStorage;
 import com.deliveryfood.domain.service.FotoStorageService;
-import com.deliveryfood.infrastructure.repository.service.storage.LocalFotoStorageService;
-import com.deliveryfood.infrastructure.repository.service.storage.S3FotoStorageService;
+import com.deliveryfood.infrastructure.service.storage.LocalFotoStorageService;
+import com.deliveryfood.infrastructure.service.storage.S3FotoStorageService;
 
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
