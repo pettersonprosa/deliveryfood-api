@@ -15,24 +15,6 @@ public class AmazonS3Config {
     @Autowired
     private StorageProperties storageProperties;
 
-    // @Bean
-    // public AmazonS3 amazonS3() {
-    //     var credentials = new BasicAWSCredentials(
-    //             storageProperties.getS3().getIdChaveAcesso(),
-    //             storageProperties.getS3().getChaveAcessoSecreta());
-
-    //     AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(
-    //         storageProperties.getS3().getIdChaveAcesso(),
-    //         storageProperties.getS3().getChaveAcessoSecreta()
-    //     );
-
-    //     return AmazonS3ClientBuilder.standard()
-    //     .withCredentials(new AWSStaticCredentialsProvider(credentials))
-    //     .withRegion(storageProperties.getS3().getRegiao())
-    //     .build();
-        
-    // }
-
     @Bean
     public S3Client s3Client() {
         AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(

@@ -1,6 +1,5 @@
 package com.deliveryfood.infrastructure.repository.service.storage;
 
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -16,6 +15,22 @@ public class LocalFotoStorageService implements FotoStorageService {
 
     @Autowired
     private StorageProperties storageProperties;
+
+    @Override
+    public FotoRecuperada recuperar(String nomeArquivo) {
+        try {
+            Path arquivoPath = getArquivoPath(nomeArquivo);
+
+            FotoRecuperada fotoRecuperada = FotoRecuperada.builder()
+                    .inputStream(Files.newInputStream(arquivoPath))
+                    .build();
+
+            return fotoRecuperada;
+        } catch (Exception e) {
+            throw new StorageException("Não foi possível recuperar o arquivo.", e);
+        }
+
+    }
 
     @Override
     public void armazenar(NovaFoto novaFoto) {
@@ -41,19 +56,8 @@ public class LocalFotoStorageService implements FotoStorageService {
     }
 
     private Path getArquivoPath(String nomeArquivo) {
-        return storageProperties.getLocal().getDiretoriosFotos();
-    }
-
-    @Override
-    public InputStream recuperar(String nomeArquivo) {
-        try {
-            Path arquivoPath = getArquivoPath(nomeArquivo);
-
-            return Files.newInputStream(arquivoPath);
-        } catch (Exception e) {
-            throw new StorageException("Não foi possível recuperar o arquivo.", e);
-        }
-
+        return storageProperties.getLocal().getDiretorioFotos()
+                .resolve(Path.of(nomeArquivo));
     }
 
 }

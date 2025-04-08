@@ -1,7 +1,5 @@
 package com.deliveryfood.infrastructure.repository.service.storage;
 
-import java.io.InputStream;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +11,6 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
 @Service
 public class S3FotoStorageService implements FotoStorageService {
@@ -25,9 +22,16 @@ public class S3FotoStorageService implements FotoStorageService {
     private StorageProperties storageProperties;
 
     @Override
-    public InputStream recuperar(String nomeArquivo) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'recuperar'");
+    public FotoRecuperada recuperar(String nomeArquivo) {
+        String caminhoArquivo = getCaminhoArquivo(nomeArquivo);
+
+        // Monta a URL pública baseada no padrão do bucket
+        String url = String.format("https://%s.s3.amazonaws.com/%s",
+                storageProperties.getS3().getBucket(), caminhoArquivo);
+
+        return FotoRecuperada.builder()
+                .url(url)
+                .build();
     }
 
     @Override
@@ -57,10 +61,6 @@ public class S3FotoStorageService implements FotoStorageService {
 
     }
 
-    private String getCaminhoArquivo(String nomeArquivo) {
-        return String.format("%s%s", storageProperties.getS3().getDiretorioFotos(), nomeArquivo);
-    }
-
     @Override
     public void remover(String nomeArquivo) {
         try {
@@ -68,13 +68,17 @@ public class S3FotoStorageService implements FotoStorageService {
 
             DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
                     .bucket(storageProperties.getS3().getBucket())
-                    .key(getCaminhoArquivo(nomeArquivo))
+                    .key(caminhoArquivo)
                     .build();
             
             s3Client.deleteObject(deleteObjectRequest);
         } catch (Exception e) {
             throw new StorageException("Não foi possível deletar arquivo na Amazon S3", e);
         }
+    }
+
+    private String getCaminhoArquivo(String nomeArquivo) {
+        return String.format("%s%s", storageProperties.getS3().getDiretorioFotos(), nomeArquivo);
     }
 
 }
