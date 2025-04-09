@@ -1,5 +1,6 @@
 package com.deliveryfood.domain.service;
 
+import java.util.Map;
 import java.util.Set;
 
 import io.micrometer.common.lang.NonNull;
@@ -22,7 +23,10 @@ public interface EnvioEmailService {
         private String assunto;
 
         @NonNull
-        private String corpo;
+        private String corpo; // não é mais o texto do corpo, mas o nome do arquivo do corpo(template)
+
+        @Singular("variavel")
+        private Map<String, Object> variaveis;
 
     }
 }
