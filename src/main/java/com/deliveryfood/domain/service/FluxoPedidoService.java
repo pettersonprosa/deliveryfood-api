@@ -21,7 +21,7 @@ public class FluxoPedidoService {
     public void confirmar(String codigoPedido) {
         Pedido pedido = emissaoPedido.buscarOuFalhar(codigoPedido);
         pedido.confirmar();
-
+        
         pedidoRepository.save(pedido);
     }
 
