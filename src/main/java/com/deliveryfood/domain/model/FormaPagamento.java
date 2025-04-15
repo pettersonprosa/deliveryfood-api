@@ -1,5 +1,9 @@
 package com.deliveryfood.domain.model;
 
+import java.time.OffsetDateTime;
+
+import org.hibernate.annotations.UpdateTimestamp;
+
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,4 +21,7 @@ public class FormaPagamento {
 
     @Column(nullable = false)
     private String descricao;
+
+    @UpdateTimestamp
+    private OffsetDateTime dataAtualizacao;
 }

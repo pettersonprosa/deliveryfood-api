@@ -1,5 +1,6 @@
 package com.deliveryfood.api.controller;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import com.deliveryfood.api.assembler.FormaPagamentoModelAssembler;
 import com.deliveryfood.api.assembler.FormaPagamentoInputDisassembler;
@@ -44,18 +47,31 @@ public class FormaPagamentoController {
     private FormaPagamentoInputDisassembler formaPagamentoInputDisassembler;
 
     @GetMapping
-    public ResponseEntity<List<FormaPagamentoModel>> listar() {
+    public ResponseEntity<List<FormaPagamentoModel>> listar(ServletWebRequest request) {
+        ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
+
+        String eTag = "0";
+
+        OffsetDateTime dataUltimaAtualizacao = formaPagamentoRepository.getDataUltimaAtualizacao();
+
+        if (dataUltimaAtualizacao != null) {
+            eTag = String.valueOf(dataUltimaAtualizacao.toEpochSecond()); 
+        }
+
+        // À partir daqui já é possível saber se o processamento de listagem deverá ser feito ou não
+
+        if (request.checkNotModified(eTag)) {
+            return null;
+        }
+
         List<FormaPagamento> todasFormasPagamento = formaPagamentoRepository.findAll();
 
         List<FormaPagamentoModel> formasPagamentosModel = formaPagamentoModelAssembler.toCollectionModel(todasFormasPagamento);
 
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
-                // .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
-                // .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS).cachePrivate())
-                // .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS).cachePublic())
-                // .cacheControl(CacheControl.noCache())
-                // .cacheControl(CacheControl.noStore())
+                .eTag(eTag)
+                // .header("ETag", eTag) // outra forma de colocar o ETag no header
                 .body(formasPagamentosModel);
     }
 
