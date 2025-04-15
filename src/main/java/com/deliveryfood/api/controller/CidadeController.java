@@ -1,5 +1,6 @@
 package com.deliveryfood.api.controller;
 
+import com.deliveryfood.api.ResourceUriHelper;
 import com.deliveryfood.api.assembler.CidadeInputDisassembler;
 import com.deliveryfood.api.assembler.CidadeModelAssembler;
 import com.deliveryfood.api.model.CidadeModel;
@@ -9,11 +10,18 @@ import com.deliveryfood.domain.exception.NegocioException;
 import com.deliveryfood.domain.model.Cidade;
 import com.deliveryfood.domain.repository.CidadeRepository;
 import com.deliveryfood.domain.service.CadastroCidadeService;
+
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -54,7 +62,11 @@ public class CidadeController {
 
             cidade = cadastroCidade.salvar(cidade);
 
-            return cidadeModelAssembler.toModel(cidade);
+            CidadeModel cidadeModel = cidadeModelAssembler.toModel(cidade);
+
+            ResourceUriHelper.addUriInResponseHeader(cidadeModel.getId());
+
+            return cidadeModel;
         } catch (EstadoNaoEncontradoException e) {
             throw new NegocioException(e.getMessage(), e);
         }
