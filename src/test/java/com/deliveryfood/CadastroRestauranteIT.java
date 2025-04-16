@@ -18,8 +18,6 @@ import com.deliveryfood.domain.model.Restaurante;
 import com.deliveryfood.domain.repository.CozinhaRepository;
 import com.deliveryfood.domain.repository.RestauranteRepository;
 import com.deliveryfood.util.DatabaseCleaner;
-import com.deliveryfood.util.ResourceUtils;
-
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 

@@ -11,17 +11,12 @@ import com.deliveryfood.domain.model.Cidade;
 import com.deliveryfood.domain.repository.CidadeRepository;
 import com.deliveryfood.domain.service.CadastroCidadeService;
 
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
+import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -51,7 +46,21 @@ public class CidadeController {
     public CidadeModel buscar(@PathVariable Long cidadeId) {
         Cidade cidade = cadastroCidade.buscarOuFalhar(cidadeId);
 
-        return cidadeModelAssembler.toModel(cidade);
+        CidadeModel cidadeModel = cidadeModelAssembler.toModel(cidade);
+
+        cidadeModel.add(
+            Link.of("http://localhost:8080/cidades/1"),
+            // Link.of("http://localhost:8080/cidades/1", IanaLinkRelations.SELF),
+            
+            // Link.of("http://localhost:8080/cidades", IanaLinkRelations.COLLECTION)
+            Link.of("http://localhost:8080/cidades", "cidades")
+            );
+
+        cidadeModel.getEstado().add(
+            Link.of("http://localhost:8080/estados/1")
+        );
+
+        return cidadeModel;
     }
 
     @PostMapping
