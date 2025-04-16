@@ -10,13 +10,12 @@ import com.deliveryfood.domain.service.CadastroCozinhaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/cozinhas")
@@ -34,16 +33,17 @@ public class CozinhaController {
     @Autowired
     private CozinhaInputDisassembler cozinhaInputDisassembler;
 
+    @Autowired
+    private PagedResourcesAssembler<Cozinha> pagedResourcesAssembler;
+
     @GetMapping
-    public Page<CozinhaModel> listar(@PageableDefault(size=10) Pageable pageable) {
+    public PagedModel<CozinhaModel> listar(@PageableDefault(size = 10) Pageable pageable) {
         Page<Cozinha> cozinhasPage = cozinhaRepository.findAll(pageable);
 
-        List<CozinhaModel> cozinhasModel = cozinhaModelAssembler.toCollectionModel(cozinhasPage.getContent());
-        
-        Page<CozinhaModel> cozinhasModelPages = new PageImpl<>(cozinhasModel, pageable, 
-                cozinhasPage.getTotalElements());
+        PagedModel<CozinhaModel> cozinhasPagedModel = pagedResourcesAssembler
+                .toModel(cozinhasPage, cozinhaModelAssembler);
 
-        return cozinhasModelPages;
+        return cozinhasPagedModel;
     }
 
     @GetMapping("/{cozinhaId}")
@@ -77,7 +77,7 @@ public class CozinhaController {
     @DeleteMapping("/{cozinhaId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remover(@PathVariable Long cozinhaId) {
-            cadastroCozinha.excluir(cozinhaId);
+        cadastroCozinha.excluir(cozinhaId);
     }
 
 }

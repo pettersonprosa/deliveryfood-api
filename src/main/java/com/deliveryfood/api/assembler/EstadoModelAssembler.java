@@ -23,6 +23,7 @@ public class EstadoModelAssembler extends RepresentationModelAssemblerSupport<Es
         super(EstadoController.class, EstadoModel.class);
     }
 
+    @Override
     public EstadoModel toModel(Estado estado) {
         EstadoModel estadoModel = createModelWithId(estado.getId(), estado);
 
