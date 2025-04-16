@@ -10,6 +10,7 @@ import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSuppor
 import org.springframework.stereotype.Component;
 
 import com.deliveryfood.api.controller.UsuarioController;
+import com.deliveryfood.api.controller.UsuarioGrupoController;
 import com.deliveryfood.api.model.UsuarioModel;
 import com.deliveryfood.domain.model.Usuario;
 
@@ -31,6 +32,9 @@ public class UsuarioModelAssembler extends RepresentationModelAssemblerSupport<U
         usuarioModel.add(linkTo(methodOn(UsuarioController.class).listar())
                 .withRel("usuarios"));
 
+        usuarioModel.add(linkTo(methodOn(UsuarioGrupoController.class).listar(usuario.getId()))
+                .withRel("grupos-usuario"));
+
         return usuarioModel;
 
     }
@@ -39,5 +43,5 @@ public class UsuarioModelAssembler extends RepresentationModelAssemblerSupport<U
     public CollectionModel<UsuarioModel> toCollectionModel(Iterable<? extends Usuario> entities) {
         return super.toCollectionModel(entities).add(linkTo(UsuarioController.class).withSelfRel());
     }
-    
+
 }
