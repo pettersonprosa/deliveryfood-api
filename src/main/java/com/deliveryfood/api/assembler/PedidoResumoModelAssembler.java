@@ -1,16 +1,12 @@
 package com.deliveryfood.api.assembler;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
+import com.deliveryfood.api.DeliveryLinks;
 import com.deliveryfood.api.controller.PedidoController;
-import com.deliveryfood.api.controller.RestauranteController;
-import com.deliveryfood.api.controller.UsuarioController;
 import com.deliveryfood.api.model.PedidoResumoModel;
 import com.deliveryfood.domain.model.Pedido;
 
@@ -19,6 +15,9 @@ public class PedidoResumoModelAssembler extends RepresentationModelAssemblerSupp
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private DeliveryLinks deliveryLinks;
 
     public PedidoResumoModelAssembler() {
         super(PedidoController.class, PedidoResumoModel.class);
@@ -30,15 +29,9 @@ public class PedidoResumoModelAssembler extends RepresentationModelAssemblerSupp
 
         modelMapper.map(pedido, pedidoModel);
 
-        pedidoModel.add(linkTo(PedidoController.class).withRel("pedidos"));
-
-        pedidoModel.getRestaurante().add(linkTo(methodOn(RestauranteController.class)
-                .buscar(pedido.getRestaurante().getId()))
-                .withSelfRel());
-
-        pedidoModel.getCliente().add(linkTo(methodOn(UsuarioController.class)
-                .buscar(pedido.getCliente().getId()))
-                .withSelfRel());
+        pedidoModel.add(deliveryLinks.linkToPedidos());
+        pedidoModel.getRestaurante().add(deliveryLinks.linkToRestaurante(pedido.getRestaurante().getId()));
+        pedidoModel.getCliente().add(deliveryLinks.linkToUsuario(pedido.getCliente().getId()));
 
         return pedidoModel;
     }

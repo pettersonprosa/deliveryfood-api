@@ -1,12 +1,11 @@
 package com.deliveryfood.api.assembler;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
+import com.deliveryfood.api.DeliveryLinks;
 import com.deliveryfood.api.controller.CozinhaController;
 import com.deliveryfood.api.model.CozinhaModel;
 import com.deliveryfood.domain.model.Cozinha;
@@ -16,6 +15,9 @@ public class CozinhaModelAssembler extends RepresentationModelAssemblerSupport<C
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private DeliveryLinks deliveryLinks;
 
     public CozinhaModelAssembler() {
         super(CozinhaController.class, CozinhaModel.class);
@@ -27,7 +29,7 @@ public class CozinhaModelAssembler extends RepresentationModelAssemblerSupport<C
         
         modelMapper.map(cozinha, cozinhaModel);
 
-        cozinhaModel.add(linkTo(CozinhaController.class).withRel("cozinhas"));
+        cozinhaModel.add(deliveryLinks.linkToCidades("cozinhas"));
         
         return cozinhaModel;
     }

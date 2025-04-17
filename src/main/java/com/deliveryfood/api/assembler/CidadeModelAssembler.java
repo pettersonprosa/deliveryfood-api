@@ -1,7 +1,6 @@
 package com.deliveryfood.api.assembler;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +8,8 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
+import com.deliveryfood.api.DeliveryLinks;
 import com.deliveryfood.api.controller.CidadeController;
-import com.deliveryfood.api.controller.EstadoController;
 import com.deliveryfood.api.model.CidadeModel;
 import com.deliveryfood.domain.model.Cidade;
 
@@ -19,6 +18,9 @@ public class CidadeModelAssembler extends RepresentationModelAssemblerSupport<Ci
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private DeliveryLinks deliveryLinks;
 
     public CidadeModelAssembler() {
         super(CidadeController.class, CidadeModel.class);
@@ -30,16 +32,10 @@ public class CidadeModelAssembler extends RepresentationModelAssemblerSupport<Ci
 
         modelMapper.map(cidade, cidadeModel);
 
-        // CidadeModel cidadeModel = modelMapper.map(cidade, CidadeModel.class);
+        
+        cidadeModel.add(deliveryLinks.linkToCidades("cidades"));
 
-        // cidadeModel.add(linkTo(methodOn(CidadeController.class)
-        // .buscar(cidadeModel.getId())).withSelfRel());
-
-        cidadeModel.add(linkTo(methodOn(CidadeController.class)
-                .listar()).withRel("cidades"));
-
-        cidadeModel.getEstado().add(linkTo(methodOn(EstadoController.class)
-                .buscar(cidadeModel.getEstado().getId())).withSelfRel());
+        cidadeModel.getEstado().add(deliveryLinks.linkToEstado(cidadeModel.getEstado().getId()));
 
         return cidadeModel;
     }
