@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.PagedModel;
@@ -23,6 +24,7 @@ import com.deliveryfood.api.assembler.PedidoResumoModelAssembler;
 import com.deliveryfood.api.model.PedidoModel;
 import com.deliveryfood.api.model.PedidoResumoModel;
 import com.deliveryfood.api.model.input.PedidoInput;
+import com.deliveryfood.core.data.PageWrapper;
 import com.deliveryfood.core.data.PageableTranslator;
 import com.deliveryfood.domain.exception.EntidadeNaoEncontradaException;
 import com.deliveryfood.domain.exception.NegocioException;
@@ -58,10 +60,16 @@ public class PedidoController {
 
     @GetMapping
     public PagedModel<PedidoResumoModel> pesquisar(@PageableDefault(size = 10) Pageable pageable, PedidoFilter filtro) {
-        pageable = traduzirPageable(pageable);
+        Pageable pageableTraduzido = traduzirPageable(pageable);
+        // pageable = traduzirPageable(pageable);
 
-        Page<Pedido> pedidosPage = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(filtro), pageable);
+        Page<Pedido> pedidosPage = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(filtro), pageableTraduzido);
 
+        pedidosPage = new PageImpl<>(pedidosPage.getContent(), pageable, pedidosPage.getTotalElements());
+        // o código acima faz a mesma coisa que o de baixo, porém sem precisar criar o PageWrapper
+        // o PageWrapper foi deixado no código só para exemplo
+        // pedidosPage = new PageWrapper<>(pedidosPage, pageable);
+        
         return pagedResourcesAssembler.toModel(pedidosPage, pedidoResumoModelAssembler);
     }
 
@@ -101,7 +109,7 @@ public class PedidoController {
                 "restaurante.nome", "restaurante.nome",
                 "restaurante.id", "restaurante.id",
                 "cliente.id", "cliente.id",
-                "cliente.nome", "cliente.nome"
+                "nomeCliente", "cliente.nome"
 
         );
 
