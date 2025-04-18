@@ -14,10 +14,10 @@ import lombok.Setter;
 @Setter
 public class CozinhaModel extends RepresentationModel<CozinhaModel> {
 
-    @JsonView(RestauranteView.Resumo.class)
+    // @JsonView(RestauranteView.Resumo.class)
     private Long id;
     
-    @JsonView(RestauranteView.Resumo.class)
+    // @JsonView(RestauranteView.Resumo.class)
     private String nome;
     
 }

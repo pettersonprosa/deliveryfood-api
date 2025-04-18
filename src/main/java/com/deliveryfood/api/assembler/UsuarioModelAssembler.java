@@ -36,7 +36,6 @@ public class UsuarioModelAssembler extends RepresentationModelAssemblerSupport<U
         usuarioModel.add(deliveryLinks.linkToGruposUsuario(usuario.getId(), "grupos-usuario"));
 
         return usuarioModel;
-
     }
 
     @Override
