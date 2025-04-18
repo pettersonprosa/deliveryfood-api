@@ -43,8 +43,9 @@ public class Restaurante {
     @Column(name = "taxa_frete", nullable = false)
     private BigDecimal taxaFrete;
 
-    @ManyToOne //(fetch = FetchType.LAZY)
-    @JoinColumn(name="cozinha_id", nullable = false) // o "name" por padrão é <nome_variavel>_id, ou seja, ficaria cozinha_id. Nesse caso, então poderia deixar só @JoinColumn
+    @ManyToOne // (fetch = FetchType.LAZY)
+    @JoinColumn(name = "cozinha_id", nullable = false) // o "name" por padrão é <nome_variavel>_id, ou seja, ficaria
+                                                       // cozinha_id. Nesse caso, então poderia deixar só @JoinColumn
     private Cozinha cozinha;
 
     @Embedded
@@ -63,19 +64,16 @@ public class Restaurante {
     private OffsetDateTime dataAtualizacao;
 
     @ManyToMany
-    @JoinTable(name = "restaurante_forma_pagamento",
-            joinColumns = @JoinColumn(name = "restaurante_id"),
-            inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id"))
-    private Set<FormaPagamento> formasPagamento = new HashSet<>(); // TODO rever se uso private List<FormaPagamento> formasPagamento = new ArrayList<>();
+    @JoinTable(name = "restaurante_forma_pagamento", joinColumns = @JoinColumn(name = "restaurante_id"), inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id"))
+    private Set<FormaPagamento> formasPagamento = new HashSet<>(); // TODO rever se uso private List<FormaPagamento>
+                                                                   // formasPagamento = new ArrayList<>();
 
     @OneToMany(mappedBy = "restaurante")
     private List<Produto> produtos = new ArrayList<>();
 
     @ManyToMany
-    @JoinTable(name = "restaurante_usuario_responsavel",
-            joinColumns = @JoinColumn(name = "restaurante_id"),
-            inverseJoinColumns = @JoinColumn(name = "usuario_id"))
-    private Set<Usuario> responsaveis = new HashSet<>();  
+    @JoinTable(name = "restaurante_usuario_responsavel", joinColumns = @JoinColumn(name = "restaurante_id"), inverseJoinColumns = @JoinColumn(name = "usuario_id"))
+    private Set<Usuario> responsaveis = new HashSet<>();
 
     public void ativar() {
         setAtivo(true);
@@ -91,6 +89,38 @@ public class Restaurante {
 
     public void fechar() {
         setAberto(false);
+    }
+
+    public boolean isAberto() {
+        return this.aberto;
+    }
+
+    public boolean isFechado() {
+        return !isAberto();
+    }
+
+    public boolean isInativo() {
+        return !isAtivo();
+    }
+
+    public boolean isAtivo() {
+        return this.ativo;
+    }
+
+    public boolean aberturaPermitida() {
+        return isAtivo() && isFechado();
+    }
+
+    public boolean ativacaoPermitida() {
+        return isInativo();
+    }
+
+    public boolean inativacaoPermitida() {
+        return isAtivo();
+    }
+
+    public boolean fechamentoPermitido() {
+        return isAberto();
     }
 
     public boolean removerFormaPagamento(FormaPagamento formaPagamento) {
@@ -112,7 +142,7 @@ public class Restaurante {
     public boolean removerResponsavel(Usuario usuario) {
         return getResponsaveis().remove(usuario);
     }
-    
+
     public boolean adicionarResponsavel(Usuario usuario) {
         return getResponsaveis().add(usuario);
     }
