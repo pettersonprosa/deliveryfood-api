@@ -20,9 +20,10 @@ import com.deliveryfood.api.assembler.RestauranteApenasNomeModelAssembler;
 import com.deliveryfood.api.assembler.RestauranteBasicoModelAssembler;
 import com.deliveryfood.api.assembler.RestauranteInputDisassembler;
 import com.deliveryfood.api.assembler.RestauranteModelAssembler;
+import com.deliveryfood.api.model.RestauranteApenasNomeModel;
+import com.deliveryfood.api.model.RestauranteBasicoModel;
 import com.deliveryfood.api.model.RestauranteModel;
 import com.deliveryfood.api.model.input.RestauranteInput;
-import com.deliveryfood.api.model.view.RestauranteView;
 import com.deliveryfood.domain.exception.CidadeNaoEncontradaException;
 import com.deliveryfood.domain.exception.CozinhaNaoEncontradaException;
 import com.deliveryfood.domain.exception.NegocioException;
@@ -30,7 +31,6 @@ import com.deliveryfood.domain.exception.RestauranteNaoEncontradoException;
 import com.deliveryfood.domain.model.Restaurante;
 import com.deliveryfood.domain.repository.RestauranteRepository;
 import com.deliveryfood.domain.service.CadastroRestauranteService;
-import com.fasterxml.jackson.annotation.JsonView;
 
 import jakarta.validation.Valid;
 
@@ -58,14 +58,14 @@ public class RestauranteController {
 
     // @JsonView(RestauranteView.Resumo.class)
     @GetMapping
-    public CollectionModel<RestauranteModel> listar() {
-        return restauranteModelAssembler.toCollectionModel(restauranteRepository.findAll());
+    public CollectionModel<RestauranteBasicoModel> listar() {
+        return restauranteBasicoModelAssembler.toCollectionModel(restauranteRepository.findAll());
     }
 
     // @JsonView(RestauranteView.ApenasNome.class)
     @GetMapping(params = "projecao=apenas-nome")
-    public CollectionModel<RestauranteModel> listarApenasNomes() {
-        return listar();
+    public CollectionModel<RestauranteApenasNomeModel> listarApenasNomes() {
+        return restauranteApenasNomeModelAssembler.toCollectionModel(restauranteRepository.findAll());
     }
 
     @GetMapping({ "/{restauranteId}" })
