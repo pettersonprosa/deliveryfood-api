@@ -20,6 +20,7 @@ import com.deliveryfood.api.controller.PedidoController;
 import com.deliveryfood.api.controller.RestauranteController;
 import com.deliveryfood.api.controller.RestauranteFormaPagamentoController;
 import com.deliveryfood.api.controller.RestauranteProdutoController;
+import com.deliveryfood.api.controller.RestauranteProdutoFotoController;
 import com.deliveryfood.api.controller.RestauranteUsuarioResponsavelController;
 import com.deliveryfood.api.controller.UsuarioController;
 import com.deliveryfood.api.controller.UsuarioGrupoController;
@@ -259,6 +260,15 @@ public class DeliveryLinks {
 
     public Link linkToProdutos(Long restauranteId) {
         return linkToProdutos(restauranteId, IanaLinkRelations.SELF.value());
+    }
+
+    public Link linkToFotoProduto(Long restauranteId, Long produtoId, String rel) {
+        return linkTo(methodOn(RestauranteProdutoFotoController.class)
+                .buscar(restauranteId, produtoId)).withRel(rel);
+    }
+
+    public Link linkToFotoProduto(Long restauranteId, Long produtoId) {
+        return linkToFotoProduto(restauranteId, produtoId, IanaLinkRelations.SELF.value());
     }
 
     public Link linkToCozinhas(String rel) {

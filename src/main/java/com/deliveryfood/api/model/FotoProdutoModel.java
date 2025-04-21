@@ -1,11 +1,15 @@
 package com.deliveryfood.api.model;
 
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
+
 import lombok.Getter;
 import lombok.Setter;
 
+@Relation(collectionRelation = "fotos")
 @Getter
 @Setter
-public class FotoProdutoModel {
+public class FotoProdutoModel extends RepresentationModel<FotoProdutoModel> {
 
     private String nomeArquivo;
     
