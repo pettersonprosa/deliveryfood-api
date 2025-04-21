@@ -24,6 +24,7 @@ public class RestauranteModelAssembler extends RepresentationModelAssemblerSuppo
         super(RestauranteController.class, RestauranteModel.class);
     }
 
+    @Override
     public RestauranteModel toModel(Restaurante restaurante) {
         RestauranteModel restauranteModel = createModelWithId(restaurante.getId(), restaurante);
 
@@ -31,6 +32,7 @@ public class RestauranteModelAssembler extends RepresentationModelAssemblerSuppo
 
         restauranteModel.add(deliveryLinks.linkToRestaurantes("restaurantes"));
         restauranteModel.getCozinha().add(deliveryLinks.linkToCozinha(restaurante.getCozinha().getId()));
+        restauranteModel.add(deliveryLinks.linkToProdutos(restaurante.getId(), "produtos"));
 
         // Null-safety para endereço/cidade
         if (restauranteModel.getEndereco() != null && restauranteModel.getEndereco().getCidade() != null) {

@@ -1,29 +1,37 @@
 package com.deliveryfood.api.assembler;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
+import com.deliveryfood.api.DeliveryLinks;
+import com.deliveryfood.api.controller.RestauranteProdutoController;
 import com.deliveryfood.api.model.ProdutoModel;
 import com.deliveryfood.domain.model.Produto;
 
 @Component
-public class ProdutoModelAssembler {
+public class ProdutoModelAssembler extends RepresentationModelAssemblerSupport<Produto, ProdutoModel> {
 
     @Autowired
     private ModelMapper modelMapper;
 
-    public ProdutoModel toModel(Produto produto) {
-        return modelMapper.map(produto, ProdutoModel.class);
+    @Autowired
+    private DeliveryLinks deliveryLinks;
+
+    public ProdutoModelAssembler() {
+        super(RestauranteProdutoController.class, ProdutoModel.class);
     }
 
-    public List<ProdutoModel> toCollectionModel(List<Produto> produtos) {
-        return produtos.stream()
-                .map(produto -> toModel(produto))
-                .collect(Collectors.toList());
+    @Override
+    public ProdutoModel toModel(Produto produto) {
+        ProdutoModel produtoModel = createModelWithId(produto.getId(), produto, produto.getRestaurante().getId());
+        
+        modelMapper.map(produto, produtoModel);
+
+        produtoModel.add(deliveryLinks.linkToProdutos(produto.getRestaurante().getId(), "produtos"));
+
+        return produtoModel;
     }
 
 }

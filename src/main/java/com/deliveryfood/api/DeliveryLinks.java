@@ -252,6 +252,15 @@ public class DeliveryLinks {
         return linkToProduto(restauranteId, produtoId, IanaLinkRelations.SELF.value());
     }
 
+    public Link linkToProdutos(Long restauranteId, String rel) {
+        return linkTo(methodOn(RestauranteProdutoController.class)
+                .listar(restauranteId, null)).withRel(rel);
+    }
+
+    public Link linkToProdutos(Long restauranteId) {
+        return linkToProdutos(restauranteId, IanaLinkRelations.SELF.value());
+    }
+
     public Link linkToCozinhas(String rel) {
         return linkTo(CozinhaController.class)
                 .withRel(rel);

@@ -3,6 +3,7 @@ package com.deliveryfood.api.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.deliveryfood.api.DeliveryLinks;
 import com.deliveryfood.api.assembler.ProdutoInputDisassembler;
 import com.deliveryfood.api.assembler.ProdutoModelAssembler;
 import com.deliveryfood.api.model.ProdutoModel;
@@ -30,6 +32,8 @@ import jakarta.validation.Valid;
 @RequestMapping("/restaurantes/{restauranteId}/produtos")
 public class RestauranteProdutoController {
 
+    private final DeliveryLinks deliveryLinks;
+
     @Autowired
     private ProdutoRepository produtoRepository;
 
@@ -45,9 +49,13 @@ public class RestauranteProdutoController {
     @Autowired
     private ProdutoInputDisassembler produtoInputDisassembler;
 
+    RestauranteProdutoController(DeliveryLinks deliveryLinks) {
+        this.deliveryLinks = deliveryLinks;
+    }
+
     @GetMapping
-    public List<ProdutoModel> listar(@PathVariable Long restauranteId,
-            @RequestParam(required = false) boolean incluirInativos) {
+    public CollectionModel<ProdutoModel> listar(@PathVariable Long restauranteId,
+            @RequestParam(required = false, defaultValue = "false") Boolean incluirInativos) {
         
         Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(restauranteId);
 
@@ -59,7 +67,8 @@ public class RestauranteProdutoController {
             todosProdutos = produtoRepository.findAtivosByRestaurante(restaurante);
         }
 
-        return produtoModelAssembler.toCollectionModel(todosProdutos);
+        return produtoModelAssembler.toCollectionModel(todosProdutos)
+                .add(deliveryLinks.linkToProdutos(restauranteId));
     }
 
     @GetMapping("/{produtoId}")
