@@ -19,6 +19,7 @@ import com.deliveryfood.api.controller.FormaPagamentoController;
 import com.deliveryfood.api.controller.GrupoController;
 import com.deliveryfood.api.controller.GrupoPermissaoController;
 import com.deliveryfood.api.controller.PedidoController;
+import com.deliveryfood.api.controller.PermissaoController;
 import com.deliveryfood.api.controller.RestauranteController;
 import com.deliveryfood.api.controller.RestauranteFormaPagamentoController;
 import com.deliveryfood.api.controller.RestauranteProdutoController;
@@ -163,6 +164,30 @@ public class DeliveryLinks {
 
     public Link linkToGrupoPermissoes(Long grupoId, String rel) {
         return linkTo(methodOn(GrupoPermissaoController.class).listar(grupoId)).withRel(rel);
+    }
+
+    public Link linkToPermissoes(String rel) {
+        return linkTo(PermissaoController.class).withRel(rel);
+    }
+
+    public Link linkToPermissoes() {
+        return linkToPermissoes(IanaLinkRelations.SELF.value());
+    }
+
+    public Link linkToGrupoPermissoes(Long grupoId) {
+        return linkToGrupoPermissoes(grupoId, IanaLinkRelations.SELF.value());
+    }
+
+    public Link linkToGrupoPermissaoAssociacao(Long grupoId, String rel) {
+        return linkTo(methodOn(GrupoPermissaoController.class)
+                .associar(grupoId, null))
+                .withRel(rel);
+    }
+
+    public Link linkToGrupoPermissaoDesassociacao(Long grupoId, Long permissaoId, String rel) {
+        return linkTo(methodOn(GrupoPermissaoController.class)
+                .desassociar(grupoId, permissaoId))
+                .withRel(rel);
     }
 
     public Link linkToRestauranteResponsaveis(Long restauranteId, String rel) {
