@@ -52,10 +52,16 @@ public class CozinhaController {
 
     @GetMapping
     public PagedModel<CozinhaModel> listar(@PageableDefault(size = 10) Pageable pageable) {
+        // TODO excluir (log para teste) a partir daqui
         // logger.info("Consultando cozinhas...");
         // logger.info("Consultando cozinhas com páginas de {} registros.", pageable.getPageSize());
         log.info("Consultando cozinhas...");
         log.info("Consultando cozinhas com páginas de {} registros.", pageable.getPageSize());
+
+        if (true) {
+            throw new RuntimeException("Teste de Exception");
+        }
+        // TODO terminar a exclusao qui
         
         Page<Cozinha> cozinhasPage = cozinhaRepository.findAll(pageable);
 
