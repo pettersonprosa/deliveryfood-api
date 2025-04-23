@@ -26,10 +26,14 @@ import com.deliveryfood.domain.repository.CozinhaRepository;
 import com.deliveryfood.domain.service.CadastroCozinhaService;
 
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping(path = "/v1/cozinhas")
 public class CozinhaController {
+
+    // private static final Logger logger = LoggerFactory.getLogger(CozinhaController.class);
 
     @Autowired
     private CozinhaRepository cozinhaRepository;
@@ -48,6 +52,11 @@ public class CozinhaController {
 
     @GetMapping
     public PagedModel<CozinhaModel> listar(@PageableDefault(size = 10) Pageable pageable) {
+        // logger.info("Consultando cozinhas...");
+        // logger.info("Consultando cozinhas com páginas de {} registros.", pageable.getPageSize());
+        log.info("Consultando cozinhas...");
+        log.info("Consultando cozinhas com páginas de {} registros.", pageable.getPageSize());
+        
         Page<Cozinha> cozinhasPage = cozinhaRepository.findAll(pageable);
 
         PagedModel<CozinhaModel> cozinhasPagedModel = pagedResourcesAssembler
