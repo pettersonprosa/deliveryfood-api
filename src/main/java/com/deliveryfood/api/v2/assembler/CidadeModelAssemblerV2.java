@@ -6,7 +6,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import com.deliveryfood.api.v1.DeliveryLinks;
+import com.deliveryfood.api.v2.DeliveryLinksV2;
 import com.deliveryfood.api.v2.controller.CidadeControllerV2;
 import com.deliveryfood.api.v2.model.CidadeModelV2;
 import com.deliveryfood.domain.model.Cidade;
@@ -18,7 +18,7 @@ public class CidadeModelAssemblerV2 extends RepresentationModelAssemblerSupport<
     private ModelMapper modelMapper;
 
     @Autowired
-    private DeliveryLinks deliveryLinks;
+    private DeliveryLinksV2 deliveryLinks;
 
     public CidadeModelAssemblerV2() {
         super(CidadeControllerV2.class, CidadeModelV2.class);

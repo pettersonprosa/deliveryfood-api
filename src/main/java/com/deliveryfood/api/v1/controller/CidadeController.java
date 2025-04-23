@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +21,6 @@ import com.deliveryfood.api.v1.assembler.CidadeInputDisassembler;
 import com.deliveryfood.api.v1.assembler.CidadeModelAssembler;
 import com.deliveryfood.api.v1.model.CidadeModel;
 import com.deliveryfood.api.v1.model.input.CidadeInput;
-import com.deliveryfood.core.web.DeliveryMediaTypes;
 import com.deliveryfood.domain.exception.EstadoNaoEncontradoException;
 import com.deliveryfood.domain.exception.NegocioException;
 import com.deliveryfood.domain.model.Cidade;
@@ -30,7 +30,7 @@ import com.deliveryfood.domain.service.CadastroCidadeService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping(value = "/cidades", produces = DeliveryMediaTypes.V1_APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/v1/cidades", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CidadeController {
 
     @Autowired
