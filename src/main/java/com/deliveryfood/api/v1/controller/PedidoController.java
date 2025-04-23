@@ -7,8 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.PagedModel;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,10 +33,11 @@ import com.deliveryfood.domain.repository.PedidoRepository;
 import com.deliveryfood.domain.repository.filter.PedidoFilter;
 import com.deliveryfood.domain.service.EmissaoPedidoService;
 import com.deliveryfood.infrastructure.repository.spec.PedidoSpecs;
+
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping(value = "/pedidos")
+@RequestMapping(path = "/v1/pedidos")
 public class PedidoController {
 
     @Autowired

@@ -19,7 +19,7 @@ import com.deliveryfood.domain.model.Usuario;
 import com.deliveryfood.domain.service.CadastroUsuarioService;
 
 @RestController
-@RequestMapping("/usuarios/{usuarioId}/grupos")
+@RequestMapping("/v1/usuarios/{usuarioId}/grupos")
 public class UsuarioGrupoController {
 
     @Autowired

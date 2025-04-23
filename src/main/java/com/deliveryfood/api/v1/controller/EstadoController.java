@@ -26,7 +26,7 @@ import com.deliveryfood.domain.service.CadastroEstadoService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/estados")
+@RequestMapping(path = "/v1/estados")
 public class EstadoController {
 
     @Autowired

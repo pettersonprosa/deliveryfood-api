@@ -19,7 +19,7 @@ import com.deliveryfood.domain.service.VendaQueryService;
 import com.deliveryfood.domain.service.VendaReportService;
 
 @RestController
-@RequestMapping(path = "/estatisticas")
+@RequestMapping(path = "/v1/estatisticas")
 public class EstatisticasController {
 
     @Autowired

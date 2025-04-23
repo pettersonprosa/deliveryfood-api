@@ -19,7 +19,7 @@ import com.deliveryfood.domain.model.Restaurante;
 import com.deliveryfood.domain.service.CadastroRestauranteService;
 
 @RestController
-@RequestMapping("/restaurantes/{restauranteId}/formas-pagamento")
+@RequestMapping("/v1/restaurantes/{restauranteId}/formas-pagamento")
 public class RestauranteFormaPagamentoController {
 
     @Autowired

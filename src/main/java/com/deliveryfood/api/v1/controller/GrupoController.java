@@ -26,7 +26,7 @@ import com.deliveryfood.domain.service.CadastroGrupoService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping(value = "/grupos")
+@RequestMapping(path = "/v1/grupos")
 public class GrupoController {
 
     @Autowired

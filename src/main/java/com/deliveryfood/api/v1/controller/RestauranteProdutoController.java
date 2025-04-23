@@ -29,7 +29,7 @@ import com.deliveryfood.domain.service.CadastroRestauranteService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/restaurantes/{restauranteId}/produtos")
+@RequestMapping("/v1/restaurantes/{restauranteId}/produtos")
 public class RestauranteProdutoController {
 
     private final DeliveryLinks deliveryLinks;

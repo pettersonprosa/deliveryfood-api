@@ -19,7 +19,7 @@ import com.deliveryfood.domain.model.Grupo;
 import com.deliveryfood.domain.service.CadastroGrupoService;
 
 @RestController
-@RequestMapping(value = "/grupos/{grupoId}/permissoes")
+@RequestMapping(path = "/v1/grupos/{grupoId}/permissoes")
 public class GrupoPermissaoController {
 
     @Autowired

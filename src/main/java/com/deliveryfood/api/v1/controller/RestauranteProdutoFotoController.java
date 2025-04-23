@@ -34,7 +34,7 @@ import com.deliveryfood.domain.service.FotoStorageService.FotoRecuperada;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/restaurantes/{restauranteId}/produtos/{produtoId}/foto")
+@RequestMapping("/v1/restaurantes/{restauranteId}/produtos/{produtoId}/foto")
 public class RestauranteProdutoFotoController {
 
     @Autowired

@@ -32,7 +32,7 @@ import com.deliveryfood.domain.service.CadastroFormaPagamentoService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/formas-pagamento")
+@RequestMapping(path = "/v1/formas-pagamento")
 public class FormaPagamentoController {
 
     @Autowired
