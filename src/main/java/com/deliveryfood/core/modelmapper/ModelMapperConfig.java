@@ -4,8 +4,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.deliveryfood.api.model.EnderecoModel;
-import com.deliveryfood.api.model.input.ItemPedidoInput;
+import com.deliveryfood.api.v1.model.EnderecoModel;
+import com.deliveryfood.api.v1.model.input.ItemPedidoInput;
 import com.deliveryfood.domain.model.Endereco;
 import com.deliveryfood.domain.model.ItemPedido;
 

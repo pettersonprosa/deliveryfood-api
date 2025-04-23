@@ -2,8 +2,8 @@ package com.deliveryfood.core.jackson;
 
 import org.springframework.stereotype.Component;
 
-import com.deliveryfood.api.model.mixin.CidadeMixin;
-import com.deliveryfood.api.model.mixin.CozinhaMixin;
+import com.deliveryfood.api.v1.model.mixin.CidadeMixin;
+import com.deliveryfood.api.v1.model.mixin.CozinhaMixin;
 import com.deliveryfood.domain.model.Cidade;
 import com.deliveryfood.domain.model.Cozinha;
 import com.fasterxml.jackson.databind.module.SimpleModule;
