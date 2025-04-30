@@ -18,7 +18,7 @@ public class SecurityConfig {
             // Define regras de autorização para as requisições HTTP
             .authorizeHttpRequests(auth -> auth
                 // Libera o acesso público (sem autenticação) para a rota /v1/cozinhas/**
-                .requestMatchers("/v1/cozinhas/**").permitAll()
+                .requestMatchers("**").permitAll()
                 // Exige autenticação para qualquer outra requisição
                 .anyRequest().authenticated()
             )

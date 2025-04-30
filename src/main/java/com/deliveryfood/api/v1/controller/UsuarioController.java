@@ -27,7 +27,7 @@ import com.deliveryfood.domain.service.CadastroUsuarioService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/usuarios")
+@RequestMapping("/v1/usuarios")
 public class UsuarioController {
 
     @Autowired
