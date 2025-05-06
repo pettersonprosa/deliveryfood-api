@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.deliveryfood.api.v1.DeliveryLinks;
+import com.deliveryfood.core.security.DeliverySecurity;
 
 @RestController
 @RequestMapping(path = "/v1/", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -16,20 +17,46 @@ public class RootEntryPointController {
     @Autowired
     private DeliveryLinks deliveryLinks;
 
+    @Autowired
+    private DeliverySecurity deliverySecurity;
+
     @GetMapping
     public RootEntryPointModel root() {
         var rootEntryPointModel = new RootEntryPointModel();
 
-        rootEntryPointModel.add(deliveryLinks.linkToCozinhas("cozinhas"));
-        rootEntryPointModel.add(deliveryLinks.linkToPedidos("pedidos"));
-        rootEntryPointModel.add(deliveryLinks.linkToRestaurantes("restaurantes"));
-        rootEntryPointModel.add(deliveryLinks.linkToGrupos("grupos"));
-        rootEntryPointModel.add(deliveryLinks.linkToUsuarios("usuarios"));
-        rootEntryPointModel.add(deliveryLinks.linkToPermissoes("permissoes"));
-        rootEntryPointModel.add(deliveryLinks.linkToFormasPagamento("formas-pagamento"));
-        rootEntryPointModel.add(deliveryLinks.linkToEstados("estados"));
-        rootEntryPointModel.add(deliveryLinks.linkToCidades("cidades"));
-        rootEntryPointModel.add(deliveryLinks.linkToEstatisticas("estatisticas"));
+        if (deliverySecurity.podeConsultarCozinhas()) {
+            rootEntryPointModel.add(deliveryLinks.linkToCozinhas("cozinhas"));
+        }
+
+        if (deliverySecurity.podePesquisarPedidos()) {
+            rootEntryPointModel.add(deliveryLinks.linkToPedidos("pedidos"));
+        }
+
+        if (deliverySecurity.podeConsultarRestaurantes()) {
+            rootEntryPointModel.add(deliveryLinks.linkToRestaurantes("restaurantes"));
+        }
+
+        if (deliverySecurity.podeConsultarUsuariosGruposPermissoes()) {
+            rootEntryPointModel.add(deliveryLinks.linkToGrupos("grupos"));
+            rootEntryPointModel.add(deliveryLinks.linkToUsuarios("usuarios"));
+            rootEntryPointModel.add(deliveryLinks.linkToPermissoes("permissoes"));
+        }
+
+        if (deliverySecurity.podeConsultarFormasPagamento()) {
+            rootEntryPointModel.add(deliveryLinks.linkToFormasPagamento("formas-pagamento"));
+        }
+
+        if (deliverySecurity.podeConsultarEstados()) {
+            rootEntryPointModel.add(deliveryLinks.linkToEstados("estados"));
+        }
+
+        if (deliverySecurity.podeConsultarCidades()) {
+            rootEntryPointModel.add(deliveryLinks.linkToCidades("cidades"));
+        }
+
+        if (deliverySecurity.podeConsultarEstatisticas()) {
+            rootEntryPointModel.add(deliveryLinks.linkToEstatisticas("estatisticas"));
+        }
 
         return rootEntryPointModel;
     }

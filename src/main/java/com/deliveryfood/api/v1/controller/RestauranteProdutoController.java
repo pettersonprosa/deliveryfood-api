@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ import com.deliveryfood.api.v1.assembler.ProdutoInputDisassembler;
 import com.deliveryfood.api.v1.assembler.ProdutoModelAssembler;
 import com.deliveryfood.api.v1.model.ProdutoModel;
 import com.deliveryfood.api.v1.model.input.ProdutoInput;
+import com.deliveryfood.core.security.CheckSecurity;
 import com.deliveryfood.domain.model.Produto;
 import com.deliveryfood.domain.model.Restaurante;
 import com.deliveryfood.domain.repository.ProdutoRepository;
@@ -29,7 +31,7 @@ import com.deliveryfood.domain.service.CadastroRestauranteService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/v1/restaurantes/{restauranteId}/produtos")
+@RequestMapping(path = "/v1/restaurantes/{restauranteId}/produtos", produces = MediaType.APPLICATION_JSON_VALUE)
 public class RestauranteProdutoController {
 
     private final DeliveryLinks deliveryLinks;
@@ -53,6 +55,7 @@ public class RestauranteProdutoController {
         this.deliveryLinks = deliveryLinks;
     }
 
+    @CheckSecurity.Restaurantes.PodeConsultar
     @GetMapping
     public CollectionModel<ProdutoModel> listar(@PathVariable Long restauranteId,
             @RequestParam(required = false, defaultValue = "false") Boolean incluirInativos) {
@@ -71,6 +74,7 @@ public class RestauranteProdutoController {
                 .add(deliveryLinks.linkToProdutos(restauranteId));
     }
 
+    @CheckSecurity.Restaurantes.PodeConsultar
     @GetMapping("/{produtoId}")
     public ProdutoModel buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
         Produto produto = cadastroProduto.buscarOuFalhar(restauranteId, produtoId);
@@ -78,6 +82,7 @@ public class RestauranteProdutoController {
         return produtoModelAssembler.toModel(produto);
     }
 
+    @CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ProdutoModel adicionar(@PathVariable Long restauranteId, @RequestBody @Valid ProdutoInput produtoInput) {
@@ -91,6 +96,7 @@ public class RestauranteProdutoController {
         return produtoModelAssembler.toModel(produto);
     }
 
+    @CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
     @PutMapping("/{produtoId}")
     public ProdutoModel atualizar(@PathVariable Long restauranteId, @PathVariable Long produtoId,
             @RequestBody @Valid ProdutoInput produtoInput) {

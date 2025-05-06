@@ -19,8 +19,7 @@ public class CidadeInputDisassembler {
     }
     
     public void copyToDomainObject(CidadeInput cidadeInput, Cidade cidade) {
-        // Para evitar org.hibernate.HibernateException: identifier of an instance of 
-        // com.algaworks.algafood.domain.model.Estado was altered from 1 to 2
+        // Para evitar org.hibernate.HibernateException: identifier of an instance of com.deliveryfood.domain.model.Estado was altered from 1 to 2
         cidade.setEstado(new Estado());
         
         modelMapper.map(cidadeInput, cidade);

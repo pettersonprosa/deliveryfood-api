@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.deliveryfood.api.v1.DeliveryLinks;
 import com.deliveryfood.api.v1.controller.CidadeController;
 import com.deliveryfood.api.v1.model.CidadeModel;
+import com.deliveryfood.core.security.DeliverySecurity;
 import com.deliveryfood.domain.model.Cidade;
 
 @Component
@@ -20,6 +21,9 @@ public class CidadeModelAssembler extends RepresentationModelAssemblerSupport<Ci
     @Autowired
     private DeliveryLinks deliveryLinks;
 
+    @Autowired
+    private DeliverySecurity deliverySecurity;
+
     public CidadeModelAssembler() {
         super(CidadeController.class, CidadeModel.class);
     }
@@ -30,16 +34,26 @@ public class CidadeModelAssembler extends RepresentationModelAssemblerSupport<Ci
 
         modelMapper.map(cidade, cidadeModel);
 
-        cidadeModel.add(deliveryLinks.linkToCidades("cidades"));
-
-        cidadeModel.getEstado().add(deliveryLinks.linkToEstado(cidadeModel.getEstado().getId()));
-
+        if (deliverySecurity.podeConsultarCidades()) {
+            cidadeModel.add(deliveryLinks.linkToCidades("cidades"));
+        }
+        
+        if (deliverySecurity.podeConsultarEstados()) {
+            cidadeModel.getEstado().add(deliveryLinks.linkToEstado(cidadeModel.getEstado().getId()));
+        }
+        
         return cidadeModel;
     }
 
     @Override
     public CollectionModel<CidadeModel> toCollectionModel(Iterable<? extends Cidade> entities) {
-        return super.toCollectionModel(entities).add(deliveryLinks.linkToCidades());
+        CollectionModel<CidadeModel> collectionModel = super.toCollectionModel(entities);
+    
+        if (deliverySecurity.podeConsultarCidades()) {
+            collectionModel.add(deliveryLinks.linkToCidades());
+        }
+        
+        return collectionModel;
     }
 
 }

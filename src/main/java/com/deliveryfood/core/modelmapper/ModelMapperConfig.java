@@ -16,7 +16,7 @@ public class ModelMapperConfig {
     public ModelMapper modelMapper() {
         var modelMapper = new ModelMapper();
 
-        modelMapper.createTypeMap(ItemPedidoInput.class, ItemPedido.class) // TODO ajustar
+        modelMapper.createTypeMap(ItemPedidoInput.class, ItemPedido.class)
                 .addMappings(mapper -> mapper.skip(ItemPedido::setId));
 
         var enderecoToEnderecoModelTypeMap = modelMapper.createTypeMap(

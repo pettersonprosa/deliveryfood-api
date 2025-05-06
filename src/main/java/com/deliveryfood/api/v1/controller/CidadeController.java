@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +22,7 @@ import com.deliveryfood.api.v1.assembler.CidadeInputDisassembler;
 import com.deliveryfood.api.v1.assembler.CidadeModelAssembler;
 import com.deliveryfood.api.v1.model.CidadeModel;
 import com.deliveryfood.api.v1.model.input.CidadeInput;
+import com.deliveryfood.core.security.CheckSecurity;
 import com.deliveryfood.domain.exception.EstadoNaoEncontradoException;
 import com.deliveryfood.domain.exception.NegocioException;
 import com.deliveryfood.domain.model.Cidade;
@@ -29,7 +32,7 @@ import com.deliveryfood.domain.service.CadastroCidadeService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping(path = "/v1/cidades")
+@RequestMapping(path = "/v1/cidades", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CidadeController {
 
     @Autowired
@@ -44,7 +47,7 @@ public class CidadeController {
     @Autowired
     private CidadeInputDisassembler cidadeInputDisassembler;
 
-    @Deprecated
+    @CheckSecurity.Cidades.PodeConsultar
     @GetMapping
     public CollectionModel<CidadeModel> listar() {
         List<Cidade> todasCidades = cidadeRepository.findAll();
@@ -52,6 +55,7 @@ public class CidadeController {
         return cidadeModelAssembler.toCollectionModel(todasCidades);
     }
 
+    @CheckSecurity.Cidades.PodeConsultar
     @GetMapping("/{cidadeId}")
     public CidadeModel buscar(@PathVariable Long cidadeId) {
         Cidade cidade = cadastroCidade.buscarOuFalhar(cidadeId);
@@ -59,6 +63,7 @@ public class CidadeController {
         return cidadeModelAssembler.toModel(cidade);
     }
 
+    @CheckSecurity.Cidades.PodeEditar
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CidadeModel adicionar(@RequestBody @Valid CidadeInput cidadeInput) {
@@ -77,6 +82,7 @@ public class CidadeController {
         }
     }
 
+    @CheckSecurity.Cidades.PodeEditar
     @PutMapping("/{cidadeId}")
     public CidadeModel atualizar(@PathVariable Long cidadeId, @RequestBody @Valid CidadeInput cidadeInput) {
         try {
@@ -92,10 +98,13 @@ public class CidadeController {
         }
     }
 
+    @CheckSecurity.Cidades.PodeEditar
     @DeleteMapping("/{cidadeId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void remover(@PathVariable Long cidadeId) {
+    public ResponseEntity<Void> remover(@PathVariable Long cidadeId) {
         cadastroCidade.excluir(cidadeId);
+        
+        return ResponseEntity.noContent().build();
     }
 
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import com.deliveryfood.api.v1.DeliveryLinks;
 import com.deliveryfood.api.v1.controller.CozinhaController;
 import com.deliveryfood.api.v1.model.CozinhaModel;
+import com.deliveryfood.core.security.DeliverySecurity;
 import com.deliveryfood.domain.model.Cozinha;
 
 @Component
@@ -19,6 +20,9 @@ public class CozinhaModelAssembler extends RepresentationModelAssemblerSupport<C
     @Autowired
     private DeliveryLinks deliveryLinks;
 
+    @Autowired
+    private DeliverySecurity deliverySecurity;  
+
     public CozinhaModelAssembler() {
         super(CozinhaController.class, CozinhaModel.class);
     }
@@ -29,7 +33,9 @@ public class CozinhaModelAssembler extends RepresentationModelAssemblerSupport<C
         
         modelMapper.map(cozinha, cozinhaModel);
 
-        cozinhaModel.add(deliveryLinks.linkToCidades("cozinhas"));
+        if (deliverySecurity.podeConsultarCozinhas()) {
+            cozinhaModel.add(deliveryLinks.linkToCidades("cozinhas"));
+        }
         
         return cozinhaModel;
     }

@@ -3,6 +3,7 @@ package com.deliveryfood.api.v1.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,11 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.deliveryfood.api.v1.DeliveryLinks;
 import com.deliveryfood.api.v1.assembler.FormaPagamentoModelAssembler;
 import com.deliveryfood.api.v1.model.FormaPagamentoModel;
+import com.deliveryfood.core.security.CheckSecurity;
+import com.deliveryfood.core.security.DeliverySecurity;
 import com.deliveryfood.domain.model.Restaurante;
 import com.deliveryfood.domain.service.CadastroRestauranteService;
 
 @RestController
-@RequestMapping("/v1/restaurantes/{restauranteId}/formas-pagamento")
+@RequestMapping(path = "/v1/restaurantes/{restauranteId}/formas-pagamento", produces = MediaType.APPLICATION_JSON_VALUE)
 public class RestauranteFormaPagamentoController {
 
     @Autowired
@@ -31,24 +34,33 @@ public class RestauranteFormaPagamentoController {
     @Autowired
     private DeliveryLinks deliveryLinks;
 
+    @Autowired
+    private DeliverySecurity deliverySecurity;
+
+    @CheckSecurity.Restaurantes.PodeConsultar
     @GetMapping
     public CollectionModel<FormaPagamentoModel> listar(@PathVariable Long restauranteId) {
         Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(restauranteId);
 
         CollectionModel<FormaPagamentoModel> formasPagamentoModel = formaPagamentoModelAssembler
                 .toCollectionModel(restaurante.getFormasPagamento())
-                .removeLinks()
-                .add(deliveryLinks.linkToRestauranteFormasPagamento(restauranteId))
-                .add(deliveryLinks.linkToRestauranteFormaPagamentoAssociacao(restauranteId, "associacao"));
-        
-        formasPagamentoModel.getContent().forEach(formaPagamentoModel -> {
-            formaPagamentoModel.add(deliveryLinks.linkToRestauranteFormaPagamentoDesassociacao(
-                restauranteId, formaPagamentoModel.getId(),"desassociar"));
-        });
+                .removeLinks();
+                
+        formasPagamentoModel.add(deliveryLinks.linkToRestauranteFormasPagamento(restauranteId));
+
+        if (deliverySecurity.podeGerenciarFuncionamentoRestaurantes(restauranteId)) {
+            formasPagamentoModel.add(deliveryLinks.linkToRestauranteFormaPagamentoAssociacao(restauranteId, "associacao"));
+            
+            formasPagamentoModel.getContent().forEach(formaPagamentoModel -> {
+                formaPagamentoModel.add(deliveryLinks.linkToRestauranteFormaPagamentoDesassociacao(
+                    restauranteId, formaPagamentoModel.getId(),"desassociar"));
+            });
+        } 
         
         return formasPagamentoModel;
     }
 
+    @CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
     @DeleteMapping("/{formaPagamentoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> desassociar(@PathVariable Long restauranteId, @PathVariable Long formaPagamentoId) {
@@ -57,6 +69,7 @@ public class RestauranteFormaPagamentoController {
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
     @PutMapping("/{formaPagamentoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> associar(@PathVariable Long restauranteId, @PathVariable Long formaPagamentoId) {

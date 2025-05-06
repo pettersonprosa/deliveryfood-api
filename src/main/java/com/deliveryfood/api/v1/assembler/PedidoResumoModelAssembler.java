@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import com.deliveryfood.api.v1.DeliveryLinks;
 import com.deliveryfood.api.v1.controller.PedidoController;
 import com.deliveryfood.api.v1.model.PedidoResumoModel;
+import com.deliveryfood.core.security.DeliverySecurity;
 import com.deliveryfood.domain.model.Pedido;
 
 @Component
@@ -19,6 +20,9 @@ public class PedidoResumoModelAssembler extends RepresentationModelAssemblerSupp
     @Autowired
     private DeliveryLinks deliveryLinks;
 
+    @Autowired
+    private DeliverySecurity deliverySecurity;
+
     public PedidoResumoModelAssembler() {
         super(PedidoController.class, PedidoResumoModel.class);
     }
@@ -29,9 +33,18 @@ public class PedidoResumoModelAssembler extends RepresentationModelAssemblerSupp
 
         modelMapper.map(pedido, pedidoModel);
 
-        pedidoModel.add(deliveryLinks.linkToPedidos("pedidos"));
-        pedidoModel.getRestaurante().add(deliveryLinks.linkToRestaurante(pedido.getRestaurante().getId()));
-        pedidoModel.getCliente().add(deliveryLinks.linkToUsuario(pedido.getCliente().getId()));
+        if (deliverySecurity.podePesquisarPedidos()) {
+            pedidoModel.add(deliveryLinks.linkToPedidos("pedidos"));
+        }
+        
+        if (deliverySecurity.podeConsultarRestaurantes()) {
+            pedidoModel.getRestaurante().add(deliveryLinks.linkToRestaurante(pedido.getRestaurante().getId()));
+        }
+    
+        if (deliverySecurity.podeConsultarUsuariosGruposPermissoes()) {
+            pedidoModel.getCliente().add(deliveryLinks.linkToUsuario(pedido.getCliente().getId()));
+        }
+
 
         return pedidoModel;
     }

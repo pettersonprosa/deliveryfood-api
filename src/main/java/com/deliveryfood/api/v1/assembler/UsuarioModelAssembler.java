@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import com.deliveryfood.api.v1.DeliveryLinks;
 import com.deliveryfood.api.v1.controller.UsuarioController;
 import com.deliveryfood.api.v1.model.UsuarioModel;
+import com.deliveryfood.core.security.DeliverySecurity;
 import com.deliveryfood.domain.model.Usuario;
 
 @Component
@@ -22,6 +23,9 @@ public class UsuarioModelAssembler extends RepresentationModelAssemblerSupport<U
     @Autowired
     private DeliveryLinks deliveryLinks;
 
+    @Autowired
+    private DeliverySecurity deliverySecurity; 
+
     public UsuarioModelAssembler() {
         super(UsuarioController.class, UsuarioModel.class);
     }
@@ -32,8 +36,10 @@ public class UsuarioModelAssembler extends RepresentationModelAssemblerSupport<U
 
         modelMapper.map(usuario, usuarioModel);
 
-        usuarioModel.add(deliveryLinks.linkToUsuarios("usuarios"));
-        usuarioModel.add(deliveryLinks.linkToGruposUsuario(usuario.getId(), "grupos-usuario"));
+        if (deliverySecurity.podeConsultarUsuariosGruposPermissoes()) {
+            usuarioModel.add(deliveryLinks.linkToUsuarios("usuarios"));
+            usuarioModel.add(deliveryLinks.linkToGruposUsuario(usuario.getId(), "grupos-usuario"));
+        }
 
         return usuarioModel;
     }

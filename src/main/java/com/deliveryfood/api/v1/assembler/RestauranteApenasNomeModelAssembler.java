@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.deliveryfood.api.v1.DeliveryLinks;
 import com.deliveryfood.api.v1.controller.RestauranteController;
 import com.deliveryfood.api.v1.model.RestauranteApenasNomeModel;
+import com.deliveryfood.core.security.DeliverySecurity;
 import com.deliveryfood.domain.model.Restaurante;
 
 
@@ -22,6 +23,9 @@ public class RestauranteApenasNomeModelAssembler
     @Autowired
     private DeliveryLinks deliveryLinks;
 
+    @Autowired
+    private DeliverySecurity deliverySecurity;
+
     public RestauranteApenasNomeModelAssembler() {
         super(RestauranteController.class, RestauranteApenasNomeModel.class);
     }
@@ -32,13 +36,21 @@ public class RestauranteApenasNomeModelAssembler
 
         modelMapper.map(restaurante, restauranteModel);
 
-        restauranteModel.add(deliveryLinks.linkToRestaurantes("restaurantes"));
+        if (deliverySecurity.podeConsultarRestaurantes()) {
+            restauranteModel.add(deliveryLinks.linkToRestaurantes("restaurantes"));
+        }
 
         return restauranteModel;
     }
 
     @Override
     public CollectionModel<RestauranteApenasNomeModel> toCollectionModel(Iterable<? extends Restaurante> entities) {
-        return super.toCollectionModel(entities).add(deliveryLinks.linkToRestaurantes());
+        CollectionModel<RestauranteApenasNomeModel> collectionModel = super.toCollectionModel(entities);
+    
+        if (deliverySecurity.podeConsultarRestaurantes()) {
+            collectionModel.add(deliveryLinks.linkToRestaurantes());
+        }
+                
+        return collectionModel;
     }
 }

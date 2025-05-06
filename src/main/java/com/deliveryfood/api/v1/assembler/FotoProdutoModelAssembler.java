@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import com.deliveryfood.api.v1.DeliveryLinks;
 import com.deliveryfood.api.v1.controller.RestauranteProdutoFotoController;
 import com.deliveryfood.api.v1.model.FotoProdutoModel;
+import com.deliveryfood.core.security.DeliverySecurity;
 import com.deliveryfood.domain.model.FotoProduto;
 
 @Component
@@ -19,6 +20,9 @@ public class FotoProdutoModelAssembler extends RepresentationModelAssemblerSuppo
     @Autowired
     private DeliveryLinks deliveryLinks;
 
+    @Autowired
+    private DeliverySecurity deliverySecurity;
+
     public FotoProdutoModelAssembler() {
         super(RestauranteProdutoFotoController.class, FotoProdutoModel.class);
     }
@@ -28,10 +32,12 @@ public class FotoProdutoModelAssembler extends RepresentationModelAssemblerSuppo
 
         FotoProdutoModel fotoProdutoModel = modelMapper.map(foto, FotoProdutoModel.class);
 
-        fotoProdutoModel.add(deliveryLinks.linkToFotoProduto(foto.getRestauranteId(), foto.getProduto().getId()));
-        fotoProdutoModel.add(deliveryLinks.linkToProduto(
-                foto.getRestauranteId(), foto.getProduto().getId(), "produto"));
-
+        // Quem pode consultar restaurantes, também pode consultar os produtos e fotos
+        if (deliverySecurity.podeConsultarRestaurantes()) {
+            fotoProdutoModel.add(deliveryLinks.linkToFotoProduto(foto.getRestauranteId(), foto.getProduto().getId()));
+            fotoProdutoModel.add(deliveryLinks.linkToProduto(
+                    foto.getRestauranteId(), foto.getProduto().getId(), "produto"));
+        }
         return fotoProdutoModel;
     }
 

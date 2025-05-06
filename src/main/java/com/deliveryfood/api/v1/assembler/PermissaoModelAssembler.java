@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.deliveryfood.api.v1.DeliveryLinks;
 import com.deliveryfood.api.v1.model.PermissaoModel;
+import com.deliveryfood.core.security.DeliverySecurity;
 import com.deliveryfood.domain.model.Permissao;
 
 @Component
@@ -18,6 +19,9 @@ public class PermissaoModelAssembler implements RepresentationModelAssembler<Per
 
     @Autowired
     private DeliveryLinks deliveryLinks;
+    
+    @Autowired
+    private DeliverySecurity deliverySecurity;
 
     @Override
     public PermissaoModel toModel(Permissao permissao) {
@@ -26,7 +30,13 @@ public class PermissaoModelAssembler implements RepresentationModelAssembler<Per
 
     @Override
     public CollectionModel<PermissaoModel> toCollectionModel(Iterable<? extends Permissao> entities) {
-        return RepresentationModelAssembler.super.toCollectionModel(entities).add(deliveryLinks.linkToPermissoes());
+        CollectionModel<PermissaoModel> collectionModel = RepresentationModelAssembler.super.toCollectionModel(entities);
+
+        if (deliverySecurity.podeConsultarUsuariosGruposPermissoes()) {
+            collectionModel.add(deliveryLinks.linkToPermissoes());
+        }
+        
+        return collectionModel; 
     }
 
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import com.deliveryfood.api.v1.DeliveryLinks;
 import com.deliveryfood.api.v1.controller.RestauranteProdutoController;
 import com.deliveryfood.api.v1.model.ProdutoModel;
+import com.deliveryfood.core.security.DeliverySecurity;
 import com.deliveryfood.domain.model.Produto;
 
 @Component
@@ -19,6 +20,9 @@ public class ProdutoModelAssembler extends RepresentationModelAssemblerSupport<P
     @Autowired
     private DeliveryLinks deliveryLinks;
 
+    @Autowired
+    private DeliverySecurity deliveryFood;
+
     public ProdutoModelAssembler() {
         super(RestauranteProdutoController.class, ProdutoModel.class);
     }
@@ -29,9 +33,11 @@ public class ProdutoModelAssembler extends RepresentationModelAssemblerSupport<P
 
         modelMapper.map(produto, produtoModel);
 
-        produtoModel.add(deliveryLinks.linkToProdutos(produto.getRestaurante().getId(), "produtos"));
-        produtoModel.add(deliveryLinks.linkToFotoProduto(
-                produto.getRestaurante().getId(), produto.getId(), "foto"));
+        if (deliveryFood.podeConsultarRestaurantes()) {
+            produtoModel.add(deliveryLinks.linkToProdutos(produto.getRestaurante().getId(), "produtos"));
+            produtoModel.add(deliveryLinks.linkToFotoProduto(
+                    produto.getRestaurante().getId(), produto.getId(), "foto"));
+        }
 
         return produtoModel;
     }

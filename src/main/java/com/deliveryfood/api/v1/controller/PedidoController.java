@@ -10,6 +10,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +26,8 @@ import com.deliveryfood.api.v1.model.PedidoModel;
 import com.deliveryfood.api.v1.model.PedidoResumoModel;
 import com.deliveryfood.api.v1.model.input.PedidoInput;
 import com.deliveryfood.core.data.PageableTranslator;
+import com.deliveryfood.core.security.CheckSecurity;
+import com.deliveryfood.core.security.DeliverySecurity;
 import com.deliveryfood.domain.exception.EntidadeNaoEncontradaException;
 import com.deliveryfood.domain.exception.NegocioException;
 import com.deliveryfood.domain.model.Pedido;
@@ -37,7 +40,7 @@ import com.deliveryfood.infrastructure.repository.spec.PedidoSpecs;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping(path = "/v1/pedidos")
+@RequestMapping(path = "/v1/pedidos", produces = MediaType.APPLICATION_JSON_VALUE)
 public class PedidoController {
 
     @Autowired
@@ -58,6 +61,10 @@ public class PedidoController {
     @Autowired
     private PagedResourcesAssembler<Pedido> pagedResourcesAssembler;
 
+    @Autowired
+    private DeliverySecurity deliverySecurity;
+
+    @CheckSecurity.Pedidos.PodePesquisar
     @GetMapping
     public PagedModel<PedidoResumoModel> pesquisar(@PageableDefault(size = 10) Pageable pageable, PedidoFilter filtro) {
         Pageable pageableTraduzido = traduzirPageable(pageable);
@@ -73,6 +80,7 @@ public class PedidoController {
         return pagedResourcesAssembler.toModel(pedidosPage, pedidoResumoModelAssembler);
     }
 
+    @CheckSecurity.Pedidos.PodeBuscar
     @GetMapping("/{codigoPedido}")
     public PedidoModel buscar(@PathVariable String codigoPedido) {
         Pedido pedido = emissaoPedido.buscarOuFalhar(codigoPedido);
@@ -80,15 +88,15 @@ public class PedidoController {
         return pedidoModelAssembler.toModel(pedido);
     }
 
+    @CheckSecurity.Pedidos.PodeCriar
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PedidoModel adicionar(@RequestBody @Valid PedidoInput pedidoInput) {
         try {
             Pedido novoPedido = pedidoInputDisassembler.toDomainObject(pedidoInput);
 
-            // TODO pegar usuario autenticado
             novoPedido.setCliente(new Usuario());
-            novoPedido.getCliente().setId(1L);
+            novoPedido.getCliente().setId(deliverySecurity.getUsuarioId());
 
             novoPedido = emissaoPedido.emitir(novoPedido);
 

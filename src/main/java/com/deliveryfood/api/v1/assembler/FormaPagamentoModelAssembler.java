@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.deliveryfood.api.v1.DeliveryLinks;
 import com.deliveryfood.api.v1.controller.FormaPagamentoController;
 import com.deliveryfood.api.v1.model.FormaPagamentoModel;
+import com.deliveryfood.core.security.DeliverySecurity;
 import com.deliveryfood.domain.model.FormaPagamento;
 
 @Component
@@ -18,7 +19,11 @@ public class FormaPagamentoModelAssembler
     @Autowired
     private ModelMapper modelMapper;
 
-    @Autowired DeliveryLinks deliveryLinks;
+    @Autowired 
+    private DeliveryLinks deliveryLinks;
+
+    @Autowired
+    private DeliverySecurity deliverySecurity;
 
     public FormaPagamentoModelAssembler() {
         super(FormaPagamentoController.class, FormaPagamentoModel.class);
@@ -30,14 +35,22 @@ public class FormaPagamentoModelAssembler
         
         modelMapper.map(formaPagamento, formaPagamentoModel);
 
-        formaPagamentoModel.add(deliveryLinks.linkToFormasPagamento("formasPagamentos"));
+        if (deliverySecurity.podeConsultarFormasPagamento()) {
+            formaPagamentoModel.add(deliveryLinks.linkToFormasPagamento("formasPagamentos"));
+        }
 
         return formaPagamentoModel;
     }
 
     @Override
     public CollectionModel<FormaPagamentoModel> toCollectionModel(Iterable<? extends FormaPagamento> entities) {
-        return super.toCollectionModel(entities).add(deliveryLinks.linkToFormasPagamento());
+        CollectionModel<FormaPagamentoModel> collectionModel = super.toCollectionModel(entities);
+    
+        if (deliverySecurity.podeConsultarFormasPagamento()) {
+            collectionModel.add(deliveryLinks.linkToFormasPagamento());
+        }
+
+        return collectionModel;
     }
 
 }

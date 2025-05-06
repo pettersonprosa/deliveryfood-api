@@ -1,7 +1,5 @@
 package com.deliveryfood.api.v1.assembler;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -11,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.deliveryfood.api.v1.DeliveryLinks;
 import com.deliveryfood.api.v1.controller.EstadoController;
 import com.deliveryfood.api.v1.model.EstadoModel;
+import com.deliveryfood.core.security.DeliverySecurity;
 import com.deliveryfood.domain.model.Estado;
 
 @Component
@@ -22,6 +21,9 @@ public class EstadoModelAssembler extends RepresentationModelAssemblerSupport<Es
     @Autowired
     private DeliveryLinks deliveryLinks;
 
+    @Autowired
+    private DeliverySecurity deliverySecurity; 
+
     public EstadoModelAssembler() {
         super(EstadoController.class, EstadoModel.class);
     }
@@ -32,14 +34,22 @@ public class EstadoModelAssembler extends RepresentationModelAssemblerSupport<Es
 
         modelMapper.map(estado, estadoModel);
         
-        estadoModel.add(deliveryLinks.linkToEstados("estados"));
+        if (deliverySecurity.podeConsultarEstados()) {
+            estadoModel.add(deliveryLinks.linkToEstados("estados"));
+        }
 
         return estadoModel;
     }
 
     @Override
     public CollectionModel<EstadoModel> toCollectionModel(Iterable<? extends Estado> entities) {
-        return super.toCollectionModel(entities).add(deliveryLinks.linkToEstados());
+        CollectionModel<EstadoModel> collectionModel = super.toCollectionModel(entities);
+    
+        if (deliverySecurity.podeConsultarEstados()) {
+            collectionModel.add(deliveryLinks.linkToEstados());
+        }
+        
+        return collectionModel;
     }
 
 }

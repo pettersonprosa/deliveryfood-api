@@ -3,6 +3,7 @@ package com.deliveryfood.api.v1.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,11 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.deliveryfood.api.v1.DeliveryLinks;
 import com.deliveryfood.api.v1.assembler.GrupoModelAssembler;
 import com.deliveryfood.api.v1.model.GrupoModel;
+import com.deliveryfood.core.security.CheckSecurity;
+import com.deliveryfood.core.security.DeliverySecurity;
 import com.deliveryfood.domain.model.Usuario;
 import com.deliveryfood.domain.service.CadastroUsuarioService;
 
 @RestController
-@RequestMapping("/v1/usuarios/{usuarioId}/grupos")
+@RequestMapping(path = "/v1/usuarios/{usuarioId}/grupos", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UsuarioGrupoController {
 
     @Autowired
@@ -31,22 +34,30 @@ public class UsuarioGrupoController {
     @Autowired
     private DeliveryLinks deliveryLinks;
 
+    @Autowired
+    private DeliverySecurity deliverySecurity;
+
+    @CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
     @GetMapping
     public CollectionModel<GrupoModel> listar(@PathVariable Long usuarioId) {
         Usuario usuario = cadastroUsuario.buscarOuFalhar(usuarioId);
 
         CollectionModel<GrupoModel> gruposModel = grupoModelAssembler.toCollectionModel(usuario.getGrupos())
-                .removeLinks()
-                .add(deliveryLinks.linkToUsuarioGrupoAssociacao(usuarioId, "associar"));
+                .removeLinks();
 
-        gruposModel.getContent().forEach(grupoModel -> {
-            grupoModel.add(deliveryLinks.linkToUsuarioGrupoDesassociacao(
-                usuarioId, grupoModel.getId(), "desassociar"));
-        });
+        if (deliverySecurity.podeEditarUsuariosGruposPermissoes()) {
+            gruposModel.add(deliveryLinks.linkToUsuarioGrupoAssociacao(usuarioId, "associar"));
+    
+            gruposModel.getContent().forEach(grupoModel -> {
+                grupoModel.add(deliveryLinks.linkToUsuarioGrupoDesassociacao(
+                    usuarioId, grupoModel.getId(), "desassociar"));
+            });
+        }
 
         return gruposModel;
     }
 
+    @CheckSecurity.UsuariosGruposPermissoes.PodeEditar
     @DeleteMapping("/{grupoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> desassociar(@PathVariable Long usuarioId, @PathVariable Long grupoId) {
@@ -55,6 +66,7 @@ public class UsuarioGrupoController {
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecurity.UsuariosGruposPermissoes.PodeEditar
     @PutMapping("/{grupoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> associar(@PathVariable Long usuarioId, @PathVariable Long grupoId) {

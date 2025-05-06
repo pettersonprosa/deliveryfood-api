@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +21,7 @@ import com.deliveryfood.api.v1.assembler.EstadoInputDisassembler;
 import com.deliveryfood.api.v1.assembler.EstadoModelAssembler;
 import com.deliveryfood.api.v1.model.EstadoModel;
 import com.deliveryfood.api.v1.model.input.EstadoInput;
+import com.deliveryfood.core.security.CheckSecurity;
 import com.deliveryfood.domain.model.Estado;
 import com.deliveryfood.domain.repository.EstadoRepository;
 import com.deliveryfood.domain.service.CadastroEstadoService;
@@ -26,7 +29,7 @@ import com.deliveryfood.domain.service.CadastroEstadoService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping(path = "/v1/estados")
+@RequestMapping(path = "/v1/estados", produces = MediaType.APPLICATION_JSON_VALUE)
 public class EstadoController {
 
     @Autowired
@@ -41,6 +44,7 @@ public class EstadoController {
     @Autowired
     private EstadoInputDisassembler estadoInputDisassembler;
 
+    @CheckSecurity.Estados.PodeConsultar
     @GetMapping
     public CollectionModel<EstadoModel> listar() {
         List<Estado> todosEstados = estadoRepository.findAll();
@@ -48,6 +52,7 @@ public class EstadoController {
         return estadoModelAssembler.toCollectionModel(todosEstados);
     }
 
+    @CheckSecurity.Estados.PodeConsultar
     @GetMapping("/{estadoId}")
     public EstadoModel buscar(@PathVariable Long estadoId) {
         Estado estado = cadastroEstado.buscarOuFalhar(estadoId);
@@ -55,16 +60,18 @@ public class EstadoController {
         return estadoModelAssembler.toModel(estado);
     }
 
+    @CheckSecurity.Estados.PodeEditar
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public EstadoModel adicionar(@RequestBody @Valid EstadoInput estadoInput) {
         Estado estado = estadoInputDisassembler.toDomainModel(estadoInput);
 
         estado = cadastroEstado.salvar(estado);
-        
+
         return estadoModelAssembler.toModel(estado);
     }
 
+    @CheckSecurity.Estados.PodeEditar
     @PutMapping("/{estadoId}")
     public EstadoModel atualizar(@PathVariable Long estadoId, @RequestBody @Valid EstadoInput estadoInput) {
         Estado estadoAtual = cadastroEstado.buscarOuFalhar(estadoId);
@@ -76,11 +83,13 @@ public class EstadoController {
         return estadoModelAssembler.toModel(estadoAtual);
     }
 
-
+    @CheckSecurity.Estados.PodeEditar
     @DeleteMapping("/{estadoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void remover(@PathVariable Long estadoId) {
-            cadastroEstado.excluir(estadoId);
+    public ResponseEntity<Void> remover(@PathVariable Long estadoId) {
+        cadastroEstado.excluir(estadoId);
+
+        return ResponseEntity.noContent().build();
     }
 
 }

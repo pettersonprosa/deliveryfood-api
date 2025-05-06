@@ -7,6 +7,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,19 +23,16 @@ import com.deliveryfood.api.v1.assembler.CozinhaInputDisassembler;
 import com.deliveryfood.api.v1.assembler.CozinhaModelAssembler;
 import com.deliveryfood.api.v1.model.CozinhaModel;
 import com.deliveryfood.api.v1.model.input.CozinhaInput;
+import com.deliveryfood.core.security.CheckSecurity;
 import com.deliveryfood.domain.model.Cozinha;
 import com.deliveryfood.domain.repository.CozinhaRepository;
 import com.deliveryfood.domain.service.CadastroCozinhaService;
 
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @RestController
-@RequestMapping(path = "/v1/cozinhas")
+@RequestMapping(path = "/v1/cozinhas", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CozinhaController {
-
-    // private static final Logger logger = LoggerFactory.getLogger(CozinhaController.class);
 
     @Autowired
     private CozinhaRepository cozinhaRepository;
@@ -50,6 +49,7 @@ public class CozinhaController {
     @Autowired
     private PagedResourcesAssembler<Cozinha> pagedResourcesAssembler;
 
+    @CheckSecurity.Cozinhas.PodeConsultar
     @GetMapping
     public PagedModel<CozinhaModel> listar(@PageableDefault(size = 10) Pageable pageable) {
         Page<Cozinha> cozinhasPage = cozinhaRepository.findAll(pageable);
@@ -60,6 +60,7 @@ public class CozinhaController {
         return cozinhasPagedModel;
     }
 
+    @CheckSecurity.Cozinhas.PodeConsultar
     @GetMapping("/{cozinhaId}")
     public CozinhaModel buscar(@PathVariable Long cozinhaId) {
         Cozinha cozinha = cadastroCozinha.buscarOuFalhar(cozinhaId);
@@ -67,6 +68,7 @@ public class CozinhaController {
         return cozinhaModelAssembler.toModel(cozinha);
     }
 
+    @CheckSecurity.Cozinhas.PodeEditar
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CozinhaModel adicionar(@RequestBody @Valid CozinhaInput cozinhaInput) {
@@ -77,6 +79,7 @@ public class CozinhaController {
         return cozinhaModelAssembler.toModel(cozinha);
     }
 
+    @CheckSecurity.Cozinhas.PodeEditar
     @PutMapping("/{cozinhaId}")
     public CozinhaModel atualizar(@PathVariable Long cozinhaId, @RequestBody @Valid CozinhaInput cozinhaInput) {
         Cozinha cozinhaAtual = cadastroCozinha.buscarOuFalhar(cozinhaId);
@@ -88,10 +91,13 @@ public class CozinhaController {
         return cozinhaModelAssembler.toModel(cozinhaAtual);
     }
 
+    @CheckSecurity.Cozinhas.PodeEditar
     @DeleteMapping("/{cozinhaId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void remover(@PathVariable Long cozinhaId) {
+    public ResponseEntity<Void> remover(@PathVariable Long cozinhaId) {
         cadastroCozinha.excluir(cozinhaId);
+
+        return ResponseEntity.noContent().build();
     }
 
 }

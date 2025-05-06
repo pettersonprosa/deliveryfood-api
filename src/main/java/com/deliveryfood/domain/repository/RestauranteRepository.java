@@ -23,4 +23,6 @@ public interface RestauranteRepository extends CustomJpaRepository<Restaurante, 
 
     List<Restaurante> consultarPorNome(String nome, @Param("id") Long cozinha);
 
+    boolean existsResponsavel(Long restauranteld, Long usuariold);
+
 }

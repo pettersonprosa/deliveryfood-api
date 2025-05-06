@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +21,7 @@ import com.deliveryfood.api.v1.assembler.GrupoInputDisassembler;
 import com.deliveryfood.api.v1.assembler.GrupoModelAssembler;
 import com.deliveryfood.api.v1.model.GrupoModel;
 import com.deliveryfood.api.v1.model.input.GrupoInput;
+import com.deliveryfood.core.security.CheckSecurity;
 import com.deliveryfood.domain.model.Grupo;
 import com.deliveryfood.domain.repository.GrupoRepository;
 import com.deliveryfood.domain.service.CadastroGrupoService;
@@ -26,7 +29,7 @@ import com.deliveryfood.domain.service.CadastroGrupoService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping(path = "/v1/grupos")
+@RequestMapping(path = "/v1/grupos", produces = MediaType.APPLICATION_JSON_VALUE)
 public class GrupoController {
 
     @Autowired
@@ -41,6 +44,7 @@ public class GrupoController {
     @Autowired
     private GrupoInputDisassembler grupoInputDisassembler;
 
+    @CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
     @GetMapping
     public CollectionModel<GrupoModel> listar() {
         List<Grupo> todosGrupos = (grupoRepository.findAll());
@@ -48,6 +52,7 @@ public class GrupoController {
         return grupoModelAssembler.toCollectionModel(todosGrupos);
     }
 
+    @CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
     @GetMapping("/{grupoId}")
     public GrupoModel buscar(@PathVariable Long grupoId) {
         Grupo grupo = cadastroGrupo.buscarOuFalhar(grupoId);
@@ -55,6 +60,7 @@ public class GrupoController {
         return grupoModelAssembler.toModel(grupo);
     }
 
+    @CheckSecurity.UsuariosGruposPermissoes.PodeEditar
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public GrupoModel adicionar(@RequestBody @Valid GrupoInput grupoInput) {
@@ -65,6 +71,7 @@ public class GrupoController {
         return grupoModelAssembler.toModel(grupo);
     }
 
+    @CheckSecurity.UsuariosGruposPermissoes.PodeEditar
     @PutMapping("/{grupoId}")
     public GrupoModel atualizar(@PathVariable Long grupoId, @RequestBody @Valid GrupoInput grupoInput) {
         Grupo grupoAtual = cadastroGrupo.buscarOuFalhar(grupoId);
@@ -76,10 +83,13 @@ public class GrupoController {
         return grupoModelAssembler.toModel(grupoAtual);
     }
 
+    @CheckSecurity.UsuariosGruposPermissoes.PodeEditar
     @DeleteMapping("/{grupoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void remover(@PathVariable Long grupoId) {
+    public ResponseEntity<Void> remover(@PathVariable Long grupoId) {
         cadastroGrupo.excluir(grupoId);
+        
+        return ResponseEntity.noContent().build();
     }
 
 }

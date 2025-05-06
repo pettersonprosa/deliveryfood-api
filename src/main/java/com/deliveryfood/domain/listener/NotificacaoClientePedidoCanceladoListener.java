@@ -1,14 +1,13 @@
 package com.deliveryfood.domain.listener;
 
-import com.deliveryfood.domain.service.EnvioEmailService;
-import com.deliveryfood.domain.service.EnvioEmailService.Mensagem;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.deliveryfood.domain.event.PedidoCanceladoEvent;
 import com.deliveryfood.domain.model.Pedido;
+import com.deliveryfood.domain.service.EnvioEmailService;
+import com.deliveryfood.domain.service.EnvioEmailService.Mensagem;
 
 @Component
 public class NotificacaoClientePedidoCanceladoListener {
@@ -21,7 +20,7 @@ public class NotificacaoClientePedidoCanceladoListener {
         Pedido pedido = event.getPedido();
         var mensagem = Mensagem.builder()
                 .assunto(pedido.getRestaurante().getNome() + " - Pedido cancelado")
-                .corpo("pedido-cancelado.html")
+                .corpo("emails/pedido-cancelado.html")
                 .variavel("pedido", pedido)
                 .destinatario(pedido.getCliente().getEmail())
                 .build();

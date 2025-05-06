@@ -23,7 +23,6 @@ public class CadastroRestauranteService {
     @Autowired
     private CadastroCozinhaService cadastroCozinha;
 
-    // TODO rever se preciso fazer injeção abaixo
     @Autowired
     private CadastroFormaPagamentoService cadastroFormaPagamento;
 

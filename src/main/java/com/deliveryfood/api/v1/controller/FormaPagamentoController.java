@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +26,7 @@ import com.deliveryfood.api.v1.assembler.FormaPagamentoInputDisassembler;
 import com.deliveryfood.api.v1.assembler.FormaPagamentoModelAssembler;
 import com.deliveryfood.api.v1.model.FormaPagamentoModel;
 import com.deliveryfood.api.v1.model.input.FormaPagamentoInput;
+import com.deliveryfood.core.security.CheckSecurity;
 import com.deliveryfood.domain.model.FormaPagamento;
 import com.deliveryfood.domain.repository.FormaPagamentoRepository;
 import com.deliveryfood.domain.service.CadastroFormaPagamentoService;
@@ -32,7 +34,7 @@ import com.deliveryfood.domain.service.CadastroFormaPagamentoService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping(path = "/v1/formas-pagamento")
+@RequestMapping(path = "/v1/formas-pagamento", produces = MediaType.APPLICATION_JSON_VALUE)
 public class FormaPagamentoController {
 
     @Autowired
@@ -47,6 +49,7 @@ public class FormaPagamentoController {
     @Autowired
     private FormaPagamentoInputDisassembler formaPagamentoInputDisassembler;
 
+    @CheckSecurity.FormasPagamento.PodeConsultar
     @GetMapping
     public ResponseEntity<CollectionModel<FormaPagamentoModel>> listar(ServletWebRequest request) {
         ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
@@ -75,6 +78,7 @@ public class FormaPagamentoController {
                 .body(formasPagamentosModel);
     }
 
+    @CheckSecurity.FormasPagamento.PodeConsultar
     @GetMapping("/{formaPagamentoId}")
     public ResponseEntity<FormaPagamentoModel> buscar(@PathVariable Long formaPagamentoId, ServletWebRequest request) {
         ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
@@ -100,6 +104,7 @@ public class FormaPagamentoController {
                 .body(formaPagamentoModel);
     }
 
+    @CheckSecurity.FormasPagamento.PodeEditar
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public FormaPagamentoModel adicionar(@RequestBody @Valid FormaPagamentoInput formaPagamentoInput) {
@@ -110,6 +115,7 @@ public class FormaPagamentoController {
         return formaPagamentoModelAssembler.toModel(formaPagamento);
     }
 
+    @CheckSecurity.FormasPagamento.PodeEditar
     @PutMapping("/{formaPagamentoId}")
     public FormaPagamentoModel atualizar(@PathVariable Long formaPagamentoId,
             @RequestBody @Valid FormaPagamentoInput formaPagamentoInput) {
@@ -123,10 +129,13 @@ public class FormaPagamentoController {
         return formaPagamentoModelAssembler.toModel(formaPagamentoAtual);
     }
 
+    @CheckSecurity.FormasPagamento.PodeEditar
     @DeleteMapping("/{formaPagamentoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void remover(@PathVariable Long formaPagamentoId) {
+    public ResponseEntity<Void> remover(@PathVariable Long formaPagamentoId) {
         cadastroFormaPagamento.excluir(formaPagamentoId);
+        
+        return ResponseEntity.noContent().build();
     }
 
 }
