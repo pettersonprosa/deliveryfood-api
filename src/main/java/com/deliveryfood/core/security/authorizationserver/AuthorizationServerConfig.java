@@ -1,5 +1,7 @@
 package com.deliveryfood.core.security.authorizationserver;
 
+import java.io.InputStream;
+import java.security.KeyStore;
 import java.time.Duration;
 import java.util.Arrays;
 
@@ -7,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +26,12 @@ import org.springframework.security.oauth2.server.authorization.settings.OAuth2T
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.SecurityContext;
 
 @Configuration
 public class AuthorizationServerConfig {
@@ -62,7 +71,7 @@ public class AuthorizationServerConfig {
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                 .scope("READ")
                 .tokenSettings(TokenSettings.builder()
-                        .accessTokenFormat(OAuth2TokenFormat.REFERENCE)
+                        .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
                         .accessTokenTimeToLive(Duration.ofMinutes(30))
                         .build())
                 .build();
@@ -74,5 +83,20 @@ public class AuthorizationServerConfig {
     public OAuth2AuthorizationService oAuth2AuthorizationService(JdbcOperations jdbcOperation,
             RegisteredClientRepository registeredClientRepository) {
         return new JdbcOAuth2AuthorizationService(jdbcOperation, registeredClientRepository);
+    }
+
+    @Bean
+    public JWKSource<SecurityContext> jwkSouce(JwtKeyStoreProperties properties) throws Exception {
+        char[] keyStorePass = properties.getPassword().toCharArray();
+        String keypairAlias = properties.getKeypairAlias();
+
+        Resource jksLocation = properties.getJksLocation();
+        InputStream inputStream = jksLocation.getInputStream();
+        KeyStore keyStore = KeyStore.getInstance("JKS");
+        keyStore.load(inputStream, keyStorePass);
+
+        RSAKey rsaKey = RSAKey.load(keyStore, keypairAlias, keyStorePass);
+
+        return new ImmutableJWKSet<>(new JWKSet(rsaKey));
     }
 }
