@@ -26,7 +26,17 @@ public class DeliverySecurity {
     public Long getUsuarioId() {
         Jwt jwt = (Jwt) getAuthentication().getPrincipal();
 
-        return jwt.getClaim("usuario_id");
+        Object claim = jwt.getClaim("usuario_id");
+
+        if (claim instanceof Long) {
+            return (Long) claim;
+        } else if (claim instanceof Integer) {
+            return ((Integer) claim).longValue();
+        } else if (claim instanceof String) {
+            return Long.parseLong((String) claim);
+        } else {
+            throw new IllegalStateException("Tipo de claim 'usuario_id' não suportado: " + claim);
+        }
     }
 
     public boolean gerenciaRestaurante(Long restauranteId) {
