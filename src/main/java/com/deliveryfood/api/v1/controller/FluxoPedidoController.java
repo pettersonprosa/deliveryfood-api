@@ -10,17 +10,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.deliveryfood.api.v1.openapi.controller.FluxoPedidoControllerOpenApi;
 import com.deliveryfood.core.security.CheckSecurity;
 import com.deliveryfood.domain.service.FluxoPedidoService;
 
 @RestController
 @RequestMapping(path = "/v1/pedidos/{codigoPedido}", produces = MediaType.APPLICATION_JSON_VALUE)
-public class FluxoPedidoController {
+public class FluxoPedidoController implements FluxoPedidoControllerOpenApi {
 
     @Autowired
     private FluxoPedidoService fluxoPedido;
 
     @CheckSecurity.Pedidos.PodeGerenciarPedidos
+    @Override
     @PutMapping("/confirmacao")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> confirmar(@PathVariable String codigoPedido) {
@@ -30,6 +32,7 @@ public class FluxoPedidoController {
     }
 
     @CheckSecurity.Pedidos.PodeGerenciarPedidos
+    @Override
     @PutMapping("/cancelamento")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> cancelar(@PathVariable String codigoPedido) {
@@ -39,6 +42,7 @@ public class FluxoPedidoController {
     }
 
     @CheckSecurity.Pedidos.PodeGerenciarPedidos
+    @Override
     @PutMapping("/entrega")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> entregar(@PathVariable String codigoPedido) {

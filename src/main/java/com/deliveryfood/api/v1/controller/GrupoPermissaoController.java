@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.deliveryfood.api.v1.DeliveryLinks;
 import com.deliveryfood.api.v1.assembler.PermissaoModelAssembler;
 import com.deliveryfood.api.v1.model.PermissaoModel;
+import com.deliveryfood.api.v1.openapi.controller.GrupoPermissaoControllerOpenApi;
 import com.deliveryfood.core.security.CheckSecurity;
 import com.deliveryfood.core.security.DeliverySecurity;
 import com.deliveryfood.domain.model.Grupo;
@@ -23,7 +24,7 @@ import com.deliveryfood.domain.service.CadastroGrupoService;
 
 @RestController
 @RequestMapping(path = "/v1/grupos/{grupoId}/permissoes", produces = MediaType.APPLICATION_JSON_VALUE)
-public class GrupoPermissaoController {
+public class GrupoPermissaoController implements GrupoPermissaoControllerOpenApi {
 
     @Autowired
     private CadastroGrupoService cadastroGrupo;
@@ -38,6 +39,7 @@ public class GrupoPermissaoController {
     private DeliverySecurity deliverySecurity;
 
     @CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
+    @Override
     @GetMapping
     public CollectionModel<PermissaoModel> listar(@PathVariable Long grupoId) {
         Grupo grupo = cadastroGrupo.buscarOuFalhar(grupoId);
@@ -62,6 +64,7 @@ public class GrupoPermissaoController {
     }
 
     @CheckSecurity.UsuariosGruposPermissoes.PodeEditar
+    @Override
     @DeleteMapping("/{permissaoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> desassociar(@PathVariable Long grupoId, @PathVariable Long permissaoId) {
@@ -71,6 +74,7 @@ public class GrupoPermissaoController {
     }
 
     @CheckSecurity.UsuariosGruposPermissoes.PodeEditar
+    @Override
     @PutMapping("/{permissaoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> associar(@PathVariable Long grupoId, @PathVariable Long permissaoId) {

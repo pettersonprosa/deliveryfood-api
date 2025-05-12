@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.deliveryfood.api.v1.DeliveryLinks;
+import com.deliveryfood.api.v1.openapi.controller.EstatisticasControllerOpenApi;
 import com.deliveryfood.core.security.CheckSecurity;
 import com.deliveryfood.domain.filter.VendaDiaria;
 import com.deliveryfood.domain.filter.VendaDiariaFilter;
@@ -21,7 +22,7 @@ import com.deliveryfood.domain.service.VendaReportService;
 
 @RestController
 @RequestMapping(path = "/v1/estatisticas")
-public class EstatisticasController {
+public class EstatisticasController implements EstatisticasControllerOpenApi {
 
     @Autowired
     private VendaQueryService vendaQueryService;
@@ -33,6 +34,7 @@ public class EstatisticasController {
     private DeliveryLinks deliveryLinks;
 
     @CheckSecurity.Estatisticas.PodeConsultar
+    @Override
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public EstatisticasModel estatisticas() {
         var estatisticasModel = new EstatisticasModel();
@@ -43,6 +45,7 @@ public class EstatisticasController {
     }
 
     @CheckSecurity.Estatisticas.PodeConsultar
+    @Override
     @GetMapping(path = "/vendas-diarias", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<VendaDiaria> consultarVendasDiarias(VendaDiariaFilter filtro,
             @RequestParam(required = false, defaultValue = "+00:00") String timeOffset) {
@@ -50,8 +53,9 @@ public class EstatisticasController {
     }
 
     @CheckSecurity.Estatisticas.PodeConsultar
+    @Override
     @GetMapping(path = "/vendas-diarias", produces = MediaType.APPLICATION_PDF_VALUE)
-    public ResponseEntity<byte[]> consultarVendasPdf(VendaDiariaFilter filtro,
+    public ResponseEntity<byte[]> consultarVendasDiariasPdf(VendaDiariaFilter filtro,
             @RequestParam(required = false, defaultValue = "+00:00") String timeOffset) {
 
         byte[] bytesPdf = vendaReportService.emitirVendasDiarias(filtro, timeOffset);

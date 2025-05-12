@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.deliveryfood.api.v1.DeliveryLinks;
 import com.deliveryfood.api.v1.assembler.FormaPagamentoModelAssembler;
 import com.deliveryfood.api.v1.model.FormaPagamentoModel;
+import com.deliveryfood.api.v1.openapi.controller.RestauranteFormaPagamentoControllerOpenApi;
 import com.deliveryfood.core.security.CheckSecurity;
 import com.deliveryfood.core.security.DeliverySecurity;
 import com.deliveryfood.domain.model.Restaurante;
@@ -23,7 +24,7 @@ import com.deliveryfood.domain.service.CadastroRestauranteService;
 
 @RestController
 @RequestMapping(path = "/v1/restaurantes/{restauranteId}/formas-pagamento", produces = MediaType.APPLICATION_JSON_VALUE)
-public class RestauranteFormaPagamentoController {
+public class RestauranteFormaPagamentoController implements RestauranteFormaPagamentoControllerOpenApi {
 
     @Autowired
     private CadastroRestauranteService cadastroRestaurante;
@@ -38,6 +39,7 @@ public class RestauranteFormaPagamentoController {
     private DeliverySecurity deliverySecurity;
 
     @CheckSecurity.Restaurantes.PodeConsultar
+    @Override
     @GetMapping
     public CollectionModel<FormaPagamentoModel> listar(@PathVariable Long restauranteId) {
         Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(restauranteId);
@@ -61,6 +63,7 @@ public class RestauranteFormaPagamentoController {
     }
 
     @CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
+    @Override
     @DeleteMapping("/{formaPagamentoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> desassociar(@PathVariable Long restauranteId, @PathVariable Long formaPagamentoId) {
@@ -70,6 +73,7 @@ public class RestauranteFormaPagamentoController {
     }
 
     @CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
+    @Override
     @PutMapping("/{formaPagamentoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> associar(@PathVariable Long restauranteId, @PathVariable Long formaPagamentoId) {

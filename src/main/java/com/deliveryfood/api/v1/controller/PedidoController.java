@@ -25,6 +25,7 @@ import com.deliveryfood.api.v1.assembler.PedidoResumoModelAssembler;
 import com.deliveryfood.api.v1.model.PedidoModel;
 import com.deliveryfood.api.v1.model.PedidoResumoModel;
 import com.deliveryfood.api.v1.model.input.PedidoInput;
+import com.deliveryfood.api.v1.openapi.controller.PedidoControllerOpenApi;
 import com.deliveryfood.core.data.PageableTranslator;
 import com.deliveryfood.core.security.CheckSecurity;
 import com.deliveryfood.core.security.DeliverySecurity;
@@ -41,7 +42,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/v1/pedidos", produces = MediaType.APPLICATION_JSON_VALUE)
-public class PedidoController {
+public class PedidoController implements PedidoControllerOpenApi {
 
     @Autowired
     private PedidoRepository pedidoRepository;
@@ -65,6 +66,7 @@ public class PedidoController {
     private DeliverySecurity deliverySecurity;
 
     @CheckSecurity.Pedidos.PodePesquisar
+    @Override
     @GetMapping
     public PagedModel<PedidoResumoModel> pesquisar(@PageableDefault(size = 10) Pageable pageable, PedidoFilter filtro) {
         Pageable pageableTraduzido = traduzirPageable(pageable);
@@ -81,6 +83,7 @@ public class PedidoController {
     }
 
     @CheckSecurity.Pedidos.PodeBuscar
+    @Override
     @GetMapping("/{codigoPedido}")
     public PedidoModel buscar(@PathVariable String codigoPedido) {
         Pedido pedido = emissaoPedido.buscarOuFalhar(codigoPedido);
@@ -89,6 +92,7 @@ public class PedidoController {
     }
 
     @CheckSecurity.Pedidos.PodeCriar
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PedidoModel adicionar(@RequestBody @Valid PedidoInput pedidoInput) {

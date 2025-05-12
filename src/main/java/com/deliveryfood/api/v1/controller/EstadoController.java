@@ -21,6 +21,7 @@ import com.deliveryfood.api.v1.assembler.EstadoInputDisassembler;
 import com.deliveryfood.api.v1.assembler.EstadoModelAssembler;
 import com.deliveryfood.api.v1.model.EstadoModel;
 import com.deliveryfood.api.v1.model.input.EstadoInput;
+import com.deliveryfood.api.v1.openapi.controller.EstadoControllerOpenApi;
 import com.deliveryfood.core.security.CheckSecurity;
 import com.deliveryfood.domain.model.Estado;
 import com.deliveryfood.domain.repository.EstadoRepository;
@@ -30,7 +31,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/v1/estados", produces = MediaType.APPLICATION_JSON_VALUE)
-public class EstadoController {
+public class EstadoController implements EstadoControllerOpenApi {
 
     @Autowired
     private EstadoRepository estadoRepository;
@@ -45,6 +46,7 @@ public class EstadoController {
     private EstadoInputDisassembler estadoInputDisassembler;
 
     @CheckSecurity.Estados.PodeConsultar
+    @Override
     @GetMapping
     public CollectionModel<EstadoModel> listar() {
         List<Estado> todosEstados = estadoRepository.findAll();
@@ -53,6 +55,7 @@ public class EstadoController {
     }
 
     @CheckSecurity.Estados.PodeConsultar
+    @Override
     @GetMapping("/{estadoId}")
     public EstadoModel buscar(@PathVariable Long estadoId) {
         Estado estado = cadastroEstado.buscarOuFalhar(estadoId);
@@ -61,6 +64,7 @@ public class EstadoController {
     }
 
     @CheckSecurity.Estados.PodeEditar
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public EstadoModel adicionar(@RequestBody @Valid EstadoInput estadoInput) {
@@ -72,6 +76,7 @@ public class EstadoController {
     }
 
     @CheckSecurity.Estados.PodeEditar
+    @Override
     @PutMapping("/{estadoId}")
     public EstadoModel atualizar(@PathVariable Long estadoId, @RequestBody @Valid EstadoInput estadoInput) {
         Estado estadoAtual = cadastroEstado.buscarOuFalhar(estadoId);
@@ -84,6 +89,7 @@ public class EstadoController {
     }
 
     @CheckSecurity.Estados.PodeEditar
+    @Override
     @DeleteMapping("/{estadoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> remover(@PathVariable Long estadoId) {

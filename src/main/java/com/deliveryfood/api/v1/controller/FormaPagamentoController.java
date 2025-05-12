@@ -26,6 +26,7 @@ import com.deliveryfood.api.v1.assembler.FormaPagamentoInputDisassembler;
 import com.deliveryfood.api.v1.assembler.FormaPagamentoModelAssembler;
 import com.deliveryfood.api.v1.model.FormaPagamentoModel;
 import com.deliveryfood.api.v1.model.input.FormaPagamentoInput;
+import com.deliveryfood.api.v1.openapi.controller.FormaPagamentoControllerOpenApi;
 import com.deliveryfood.core.security.CheckSecurity;
 import com.deliveryfood.domain.model.FormaPagamento;
 import com.deliveryfood.domain.repository.FormaPagamentoRepository;
@@ -35,7 +36,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/v1/formas-pagamento", produces = MediaType.APPLICATION_JSON_VALUE)
-public class FormaPagamentoController {
+public class FormaPagamentoController implements FormaPagamentoControllerOpenApi {
 
     @Autowired
     private FormaPagamentoRepository formaPagamentoRepository;
@@ -50,6 +51,7 @@ public class FormaPagamentoController {
     private FormaPagamentoInputDisassembler formaPagamentoInputDisassembler;
 
     @CheckSecurity.FormasPagamento.PodeConsultar
+    @Override
     @GetMapping
     public ResponseEntity<CollectionModel<FormaPagamentoModel>> listar(ServletWebRequest request) {
         ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
@@ -79,6 +81,7 @@ public class FormaPagamentoController {
     }
 
     @CheckSecurity.FormasPagamento.PodeConsultar
+    @Override
     @GetMapping("/{formaPagamentoId}")
     public ResponseEntity<FormaPagamentoModel> buscar(@PathVariable Long formaPagamentoId, ServletWebRequest request) {
         ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
@@ -105,6 +108,7 @@ public class FormaPagamentoController {
     }
 
     @CheckSecurity.FormasPagamento.PodeEditar
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public FormaPagamentoModel adicionar(@RequestBody @Valid FormaPagamentoInput formaPagamentoInput) {
@@ -116,6 +120,7 @@ public class FormaPagamentoController {
     }
 
     @CheckSecurity.FormasPagamento.PodeEditar
+    @Override
     @PutMapping("/{formaPagamentoId}")
     public FormaPagamentoModel atualizar(@PathVariable Long formaPagamentoId,
             @RequestBody @Valid FormaPagamentoInput formaPagamentoInput) {
@@ -130,6 +135,7 @@ public class FormaPagamentoController {
     }
 
     @CheckSecurity.FormasPagamento.PodeEditar
+    @Override
     @DeleteMapping("/{formaPagamentoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> remover(@PathVariable Long formaPagamentoId) {

@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.deliveryfood.api.v1.assembler.FotoProdutoModelAssembler;
 import com.deliveryfood.api.v1.model.FotoProdutoModel;
 import com.deliveryfood.api.v1.model.input.FotoProdutoInput;
+import com.deliveryfood.api.v1.openapi.controller.RestauranteProdutoFotoControllerOpenApi;
 import com.deliveryfood.core.security.CheckSecurity;
 import com.deliveryfood.domain.exception.EntidadeNaoEncontradaException;
 import com.deliveryfood.domain.model.FotoProduto;
@@ -36,7 +37,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/v1/restaurantes/{restauranteId}/produtos/{produtoId}/foto", produces = MediaType.APPLICATION_JSON_VALUE)
-public class RestauranteProdutoFotoController {
+public class RestauranteProdutoFotoController implements RestauranteProdutoFotoControllerOpenApi {
 
     @Autowired
     private CatalogoFotoProdutoService catalogoFotoProduto;
@@ -51,6 +52,7 @@ public class RestauranteProdutoFotoController {
     private FotoStorageService fotoStorage;
 
     @CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
+    @Override
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public FotoProdutoModel atualizarFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId,
             @Valid FotoProdutoInput fotoProdutoInput) throws IOException {
@@ -73,6 +75,7 @@ public class RestauranteProdutoFotoController {
     }
 
     @CheckSecurity.Restaurantes.PodeConsultar
+    @Override
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public FotoProdutoModel buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
         FotoProduto fotoProduto = catalogoFotoProduto.buscarOuFalhar(restauranteId, produtoId);
@@ -81,6 +84,7 @@ public class RestauranteProdutoFotoController {
     }
 
     // As fotos dos produtos ficarão públicas (não precisa de autorização para acessá-las)
+    @Override
     @GetMapping(produces = MediaType.ALL_VALUE)
     public ResponseEntity<?> servirFoto(@PathVariable Long restauranteId,
             @PathVariable Long produtoId, @RequestHeader(name = "accept") String acceptHeader)
@@ -112,6 +116,7 @@ public class RestauranteProdutoFotoController {
     }
 
     @CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
+    @Override
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> excluir(@PathVariable Long restauranteId, @PathVariable Long produtoId) {

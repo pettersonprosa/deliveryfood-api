@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +22,7 @@ import com.deliveryfood.api.v1.model.UsuarioModel;
 import com.deliveryfood.api.v1.model.input.SenhaInput;
 import com.deliveryfood.api.v1.model.input.UsuarioComSenhaInput;
 import com.deliveryfood.api.v1.model.input.UsuarioInput;
+import com.deliveryfood.api.v1.openapi.controller.UsuarioControllerOpenApi;
 import com.deliveryfood.core.security.CheckSecurity;
 import com.deliveryfood.domain.model.Usuario;
 import com.deliveryfood.domain.repository.UsuarioRepository;
@@ -30,7 +32,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/v1/usuarios", produces = MediaType.APPLICATION_JSON_VALUE)
-public class UsuarioController {
+public class UsuarioController implements UsuarioControllerOpenApi {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -45,6 +47,7 @@ public class UsuarioController {
     private UsuarioInputDisassembler usuarioInputDisassembler;
 
     @CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
+    @Override
     @GetMapping
     public CollectionModel<UsuarioModel> listar() {
         List<Usuario> todosUsuarios = usuarioRepository.findAll();
@@ -53,6 +56,7 @@ public class UsuarioController {
     }
 
     @CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
+    @Override
     @GetMapping("/{usuarioId}")
     public UsuarioModel buscar(@PathVariable Long usuarioId) {
         Usuario usuario = cadastroUsuario.buscarOuFalhar(usuarioId);
@@ -60,6 +64,7 @@ public class UsuarioController {
         return usuarioModelAssembler.toModel(usuario);
     }
 
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UsuarioModel adicionar(@RequestBody @Valid UsuarioComSenhaInput usuarioInput) {
@@ -71,6 +76,7 @@ public class UsuarioController {
     }
 
     @CheckSecurity.UsuariosGruposPermissoes.PodeAlterarUsuario
+    @Override
     @PutMapping("/{usuarioId}")
     public UsuarioModel atualizar(@PathVariable Long usuarioId, @RequestBody @Valid UsuarioInput usuarioInput) {
         Usuario usuarioAtual = cadastroUsuario.buscarOuFalhar(usuarioId);
@@ -83,10 +89,13 @@ public class UsuarioController {
     }
 
     @CheckSecurity.UsuariosGruposPermissoes.PodeAlterarPropriaSenha
+    @Override
     @PutMapping("/{usuarioId}/senha")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void alterarSenha(@PathVariable Long usuarioId, @RequestBody @Valid SenhaInput senha) {
+    public ResponseEntity<Void> alterarSenha(@PathVariable Long usuarioId, @RequestBody @Valid SenhaInput senha) {
         cadastroUsuario.alterarSenha(usuarioId, senha.getSenhaAtual(), senha.getNovaSenha());
+
+        return ResponseEntity.noContent().build();
     }
 
 }

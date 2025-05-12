@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.deliveryfood.api.v1.DeliveryLinks;
 import com.deliveryfood.core.security.DeliverySecurity;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 @RestController
 @RequestMapping(path = "/v1/", produces = MediaType.APPLICATION_JSON_VALUE)
 public class RootEntryPointController {
@@ -21,6 +23,7 @@ public class RootEntryPointController {
     private DeliverySecurity deliverySecurity;
 
     @GetMapping
+    @Operation(hidden = true)
     public RootEntryPointModel root() {
         var rootEntryPointModel = new RootEntryPointModel();
 

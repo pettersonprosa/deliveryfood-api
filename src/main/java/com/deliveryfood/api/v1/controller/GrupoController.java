@@ -21,6 +21,7 @@ import com.deliveryfood.api.v1.assembler.GrupoInputDisassembler;
 import com.deliveryfood.api.v1.assembler.GrupoModelAssembler;
 import com.deliveryfood.api.v1.model.GrupoModel;
 import com.deliveryfood.api.v1.model.input.GrupoInput;
+import com.deliveryfood.api.v1.openapi.controller.GrupoControllerOpenApi;
 import com.deliveryfood.core.security.CheckSecurity;
 import com.deliveryfood.domain.model.Grupo;
 import com.deliveryfood.domain.repository.GrupoRepository;
@@ -30,7 +31,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/v1/grupos", produces = MediaType.APPLICATION_JSON_VALUE)
-public class GrupoController {
+public class GrupoController implements GrupoControllerOpenApi {
 
     @Autowired
     private GrupoRepository grupoRepository;
@@ -45,6 +46,7 @@ public class GrupoController {
     private GrupoInputDisassembler grupoInputDisassembler;
 
     @CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
+    @Override
     @GetMapping
     public CollectionModel<GrupoModel> listar() {
         List<Grupo> todosGrupos = (grupoRepository.findAll());
@@ -53,6 +55,7 @@ public class GrupoController {
     }
 
     @CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
+    @Override
     @GetMapping("/{grupoId}")
     public GrupoModel buscar(@PathVariable Long grupoId) {
         Grupo grupo = cadastroGrupo.buscarOuFalhar(grupoId);
@@ -61,6 +64,7 @@ public class GrupoController {
     }
 
     @CheckSecurity.UsuariosGruposPermissoes.PodeEditar
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public GrupoModel adicionar(@RequestBody @Valid GrupoInput grupoInput) {
@@ -72,6 +76,7 @@ public class GrupoController {
     }
 
     @CheckSecurity.UsuariosGruposPermissoes.PodeEditar
+    @Override
     @PutMapping("/{grupoId}")
     public GrupoModel atualizar(@PathVariable Long grupoId, @RequestBody @Valid GrupoInput grupoInput) {
         Grupo grupoAtual = cadastroGrupo.buscarOuFalhar(grupoId);
@@ -84,6 +89,7 @@ public class GrupoController {
     }
 
     @CheckSecurity.UsuariosGruposPermissoes.PodeEditar
+    @Override
     @DeleteMapping("/{grupoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> remover(@PathVariable Long grupoId) {

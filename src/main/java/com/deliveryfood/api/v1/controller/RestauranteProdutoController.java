@@ -21,6 +21,7 @@ import com.deliveryfood.api.v1.assembler.ProdutoInputDisassembler;
 import com.deliveryfood.api.v1.assembler.ProdutoModelAssembler;
 import com.deliveryfood.api.v1.model.ProdutoModel;
 import com.deliveryfood.api.v1.model.input.ProdutoInput;
+import com.deliveryfood.api.v1.openapi.controller.RestauranteProdutoControllerOpenApi;
 import com.deliveryfood.core.security.CheckSecurity;
 import com.deliveryfood.domain.model.Produto;
 import com.deliveryfood.domain.model.Restaurante;
@@ -32,7 +33,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/v1/restaurantes/{restauranteId}/produtos", produces = MediaType.APPLICATION_JSON_VALUE)
-public class RestauranteProdutoController {
+public class RestauranteProdutoController implements RestauranteProdutoControllerOpenApi {
 
     private final DeliveryLinks deliveryLinks;
 
@@ -56,6 +57,7 @@ public class RestauranteProdutoController {
     }
 
     @CheckSecurity.Restaurantes.PodeConsultar
+    @Override
     @GetMapping
     public CollectionModel<ProdutoModel> listar(@PathVariable Long restauranteId,
             @RequestParam(required = false, defaultValue = "false") Boolean incluirInativos) {
@@ -75,6 +77,7 @@ public class RestauranteProdutoController {
     }
 
     @CheckSecurity.Restaurantes.PodeConsultar
+    @Override
     @GetMapping("/{produtoId}")
     public ProdutoModel buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
         Produto produto = cadastroProduto.buscarOuFalhar(restauranteId, produtoId);
@@ -83,6 +86,7 @@ public class RestauranteProdutoController {
     }
 
     @CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ProdutoModel adicionar(@PathVariable Long restauranteId, @RequestBody @Valid ProdutoInput produtoInput) {
@@ -97,6 +101,7 @@ public class RestauranteProdutoController {
     }
 
     @CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
+    @Override
     @PutMapping("/{produtoId}")
     public ProdutoModel atualizar(@PathVariable Long restauranteId, @PathVariable Long produtoId,
             @RequestBody @Valid ProdutoInput produtoInput) {

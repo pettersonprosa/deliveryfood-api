@@ -23,6 +23,7 @@ import com.deliveryfood.api.v1.assembler.CozinhaInputDisassembler;
 import com.deliveryfood.api.v1.assembler.CozinhaModelAssembler;
 import com.deliveryfood.api.v1.model.CozinhaModel;
 import com.deliveryfood.api.v1.model.input.CozinhaInput;
+import com.deliveryfood.api.v1.openapi.controller.CozinhaControllerOpenApi;
 import com.deliveryfood.core.security.CheckSecurity;
 import com.deliveryfood.domain.model.Cozinha;
 import com.deliveryfood.domain.repository.CozinhaRepository;
@@ -32,7 +33,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/v1/cozinhas", produces = MediaType.APPLICATION_JSON_VALUE)
-public class CozinhaController {
+public class CozinhaController implements CozinhaControllerOpenApi {
 
     @Autowired
     private CozinhaRepository cozinhaRepository;
@@ -50,6 +51,7 @@ public class CozinhaController {
     private PagedResourcesAssembler<Cozinha> pagedResourcesAssembler;
 
     @CheckSecurity.Cozinhas.PodeConsultar
+    @Override
     @GetMapping
     public PagedModel<CozinhaModel> listar(@PageableDefault(size = 10) Pageable pageable) {
         Page<Cozinha> cozinhasPage = cozinhaRepository.findAll(pageable);
@@ -61,6 +63,7 @@ public class CozinhaController {
     }
 
     @CheckSecurity.Cozinhas.PodeConsultar
+    @Override
     @GetMapping("/{cozinhaId}")
     public CozinhaModel buscar(@PathVariable Long cozinhaId) {
         Cozinha cozinha = cadastroCozinha.buscarOuFalhar(cozinhaId);
@@ -69,6 +72,7 @@ public class CozinhaController {
     }
 
     @CheckSecurity.Cozinhas.PodeEditar
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CozinhaModel adicionar(@RequestBody @Valid CozinhaInput cozinhaInput) {
@@ -80,6 +84,7 @@ public class CozinhaController {
     }
 
     @CheckSecurity.Cozinhas.PodeEditar
+    @Override
     @PutMapping("/{cozinhaId}")
     public CozinhaModel atualizar(@PathVariable Long cozinhaId, @RequestBody @Valid CozinhaInput cozinhaInput) {
         Cozinha cozinhaAtual = cadastroCozinha.buscarOuFalhar(cozinhaId);
@@ -92,6 +97,7 @@ public class CozinhaController {
     }
 
     @CheckSecurity.Cozinhas.PodeEditar
+    @Override
     @DeleteMapping("/{cozinhaId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> remover(@PathVariable Long cozinhaId) {
