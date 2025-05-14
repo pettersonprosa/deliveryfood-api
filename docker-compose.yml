@@ -1,0 +1,36 @@
+networks:
+  deliveryfood-network:
+    name: deliveryfood-network
+    driver: bridge
+
+services:
+  deliveryfood-mysql: # nome do container
+    image: mysql:8.0.42-oraclelinux9
+    container_name: deliveryfood-mysql
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - DB_HOST=deliveryfood-mysql
+      - MYSQL_ROOT_PASSWORD=
+    ports:
+      - 3306:3306
+    networks:
+      - deliveryfood-network
+    healthcheck:
+      test: ["CMD", "mysql", "-u", "root", "-p", "--execute", "SHOW DATABASES;"]
+      # test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "--password="]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+
+  deliveryfood-api:
+    # build: . # o . representa a pasta atual; será feito o build usando o dockerfile presente na pasta atual
+    image: deliveryfood-api
+    container_name: deliveryfood-api
+    env_file: .env
+    networks:
+      - deliveryfood-network
+    ports:
+      - 8080:8080
+    depends_on: # esse servido depende de outro; ele vai ser iniciado depois do servico do qual é dependente
+      deliveryfood-mysql:
+        condition: service_healthy
