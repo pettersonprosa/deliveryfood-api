@@ -1,6 +1,11 @@
 -- desabilita foreign key
 set foreign_key_checks = 0;
 
+lock tables cidade write, cozinha write, estado write, forma_pagamento write, grupo write, grupo_permissao write, 
+    permissao write, produto write, restaurante write, restaurante_forma_pagamento write, 
+    restaurante_usuario_responsavel write, usuario write, usuario_grupo write, pedido write, item_pedido write, 
+    foto_produto write, oauth2_registered_client write;
+
 -- delete dados de todas as tabelas:
 delete from cidade;
 delete from cozinha;
@@ -173,3 +178,6 @@ VALUES('2', 'deliveryfood-web', '2025-05-07 13:27:01', '$2a$10$zbfhcbYUkC6ehoHJI
 INSERT INTO oauth2_registered_client
 (id, client_id, client_id_issued_at, client_secret, client_secret_expires_at, client_name, client_authentication_methods, authorization_grant_types, redirect_uris, post_logout_redirect_uris, scopes, client_settings, token_settings)
 VALUES('3', 'foodanalytics', '2025-05-07 13:27:01', '$2a$10$DJGU4XkPskuU.KXJIui6au.TjmN541Fb29egXOOzoPEyI4yisyw3K', NULL, 'Food Analytics', 'client_secret_basic', 'authorization_code', 'http://127.0.0.1:8082', '', 'READ,WRITE', '{"@class":"java.util.Collections$UnmodifiableMap","settings.client.require-proof-key":false,"settings.client.require-authorization-consent":false}', '{"@class":"java.util.Collections$UnmodifiableMap","settings.token.reuse-refresh-tokens":true,"settings.token.x509-certificate-bound-access-tokens":false,"settings.token.id-token-signature-algorithm":["org.springframework.security.oauth2.jose.jws.SignatureAlgorithm","RS256"],"settings.token.access-token-time-to-live":["java.time.Duration",1800.000000000],"settings.token.access-token-format":{"@class":"org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat","value":"self-contained"},"settings.token.refresh-token-time-to-live":["java.time.Duration",3600.000000000],"settings.token.authorization-code-time-to-live":["java.time.Duration",300.000000000],"settings.token.device-code-time-to-live":["java.time.Duration",300.000000000]}');
+
+
+unlock tables;

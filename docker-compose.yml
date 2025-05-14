@@ -25,12 +25,12 @@ services:
   deliveryfood-api:
     # build: . # o . representa a pasta atual; será feito o build usando o dockerfile presente na pasta atual
     image: deliveryfood-api
-    container_name: deliveryfood-api
+    # container_name: deliveryfood-api
     env_file: .env
     networks:
       - deliveryfood-network
-    ports:
-      - 8080:8080
+    # ports:
+    #   - 8080:8080
     depends_on: # esse servido depende de outro; ele vai ser iniciado depois do servico do qual é dependente
       deliveryfood-mysql:
         condition: service_healthy
