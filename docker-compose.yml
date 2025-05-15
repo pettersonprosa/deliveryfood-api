@@ -34,3 +34,13 @@ services:
     depends_on: # esse servido depende de outro; ele vai ser iniciado depois do servico do qual é dependente
       deliveryfood-mysql:
         condition: service_healthy
+
+  deliveryfood-proxy:
+    build: ./nginx
+    image: deliveryfood-proxy
+    ports:
+      - 80:80
+    networks:
+      - deliveryfood-network
+    depends_on:
+      - deliveryfood-api
