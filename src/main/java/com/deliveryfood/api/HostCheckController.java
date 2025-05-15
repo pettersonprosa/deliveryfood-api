@@ -6,6 +6,7 @@ import java.net.UnknownHostException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+// Classe para teste de host; usada para questao didatica
 @RestController
 public class HostCheckController {
 
