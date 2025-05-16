@@ -22,11 +22,19 @@ services:
       timeout: 10s
       retries: 10
 
+  deliveryfood-redis:
+    image: redis:alpine3.21
+    networks:
+      - deliveryfood-network
+
   deliveryfood-api:
     # build: . # o . representa a pasta atual; será feito o build usando o dockerfile presente na pasta atual
     image: deliveryfood-api
     # container_name: deliveryfood-api
     env_file: .env
+    environment:
+      - SPRING_SESSION_STORE_TYPE=redis
+      - SPRING_REDIS_HOST=deliveryfood-redis
     networks:
       - deliveryfood-network
     # ports:
