@@ -1,14 +1,14 @@
 spring:
   session:
     store-type: redis
-    timeout: 1800s # 30 minutos
+    # timeout: 1800s # 30 minutos
     redis:
       namespace: spring:session
   
   data:
     redis:
       host: deliveryfood-redis
-      port: 6379
+      # port: 6379
       # password: sua-senha
       # username: seu-usuario
       client-type: lettuce # Padrão no Spring Boot 3.x
