@@ -11,6 +11,8 @@
 - [Objetivo](#objetivo)
 - [Modelo de Domínio (DDD)](#modelo-de-domínio-ddd)
 - [Principais Tecnologias e Funcionalidades](#principais-tecnologias-e-funcionalidades)
+  - [Padrões utilizados](#padrões-utilizados)
+  - [Navegação entre recursos](#navegação-entre-recursos)
   - [Autenticação \& Autorização](#autenticação--autorização)
   - [Relatórios](#relatórios)
   - [E-mails](#e-mails)
@@ -18,10 +20,13 @@
   - [Documentação da API](#documentação-da-api)
   - [Banco de Dados](#banco-de-dados)
   - [Versionamento do Banco](#versionamento-do-banco)
-  - [Persistência](#persistência)
+  - [JPA (Java Persistence API)](#jpa-java-persistence-api)
   - [Logging](#logging)
+  - [Validação de objetos](#validação-de-objetos)
+  - [Tratamento de exceções](#tratamento-de-exceções)
 - [Docker Compose](#docker-compose)
   - [Arquitetura de Containers](#arquitetura-de-containers)
+    - [Componentes](#componentes)
 - [Armazenamento de imagem de produtos](#armazenamento-de-imagem-de-produtos)
 - [Versão da API](#versão-da-api)
 - [Endpoints da API](#endpoints-da-api)
@@ -30,7 +35,6 @@
   - [Exemplo de Requisição](#exemplo-de-requisição)
 - [Swagger UI - Acessando documentação e explorando endpoints](#swagger-ui---acessando-documentação-e-explorando-endpoints)
 - [Considerações Finais](#considerações-finais)
----
 
 ## Descrição
 API RESTful para um sistema de delivery de comida desenvolvida com:
@@ -43,7 +47,7 @@ API RESTful para um sistema de delivery de comida desenvolvida com:
 - Modelar e Desenvolver um Produto Mínimo Viável (MVP) de API RESTful com Spring Boot.
 
 ## Modelo de Domínio (DDD)
-O diagrama foi feito usando a abordagem *Domain Driven Design (DDD)*.
+- O diagrama foi estruturado utilizando o padrão *Aggregate Root* do *Domain-Driven Design (DDD)*.
 
 <div align="center">
     <img src="docs/img/diagrama-de-classes-de-dominio.jpeg" width=800 alt="Descrição">
@@ -51,6 +55,23 @@ O diagrama foi feito usando a abordagem *Domain Driven Design (DDD)*.
 </div><br/>
 
 ## Principais Tecnologias e Funcionalidades
+
+### Padrões utilizados
+- Domain Driven Design (DDD)
+  - [*Aggregate Root*](https://martinfowler.com/bliki/DDD_Aggregate.html): utilizado para a modelagem do domínio.
+  - [*Repository*](https://martinfowler.com/eaaCatalog/repository.html): utilizado para criar uma camada de abstração entre o domínio e a persistência de dados.
+  - *Domain Service* - utilizado para encapsular lógica de negócio que não pertence naturalmente a nenhuma entidade ou objeto de valor, mas que ainda assim é parte integrante do domínio.
+  -*Domain Events* - utilizado para disparo automático de envio de e-mail
+- Padrão *Arquitetura em Camadas* (Layered Architecture): : organização da aplicação em camadas bem definidas (apresentação, aplicação, domínio e infraestrutura).
+- Padrão *MVC* (Model-View-Controller): adaptado ao contexto de API REST, onde:
+  - Model representa o domínio da aplicação (entidades e regras de negócio).
+  - Controller atua como ponto de entrada das requisições HTTP, orquestrando as chamadas aos serviços e retornando as respostas.
+  - View é substituída por DTOs e serialização de dados, que representam as respostas enviadas pela API.
+- Padrão *DTO* - utilizado como modelo de representação (representation model) para transferência de dados entre camadas, evitando o acoplamento direto ao modelo de domínio (domain model).
+
+### Navegação entre recursos
+- HATEOAS (Hypertext as the Engine of Application State)
+- [HAL (Hypertext Application Language)](https://stateless.co/hal_specification.html) - formato usado para escrever representações de recursos de API 
 
 ### Autenticação & Autorização
 - OAuth2 com JWT (Authorization Code Flow)
@@ -77,13 +98,37 @@ O diagrama foi feito usando a abordagem *Domain Driven Design (DDD)*.
 ### Versionamento do Banco
 - Flyway
 
-### Persistência
-- Hibernate (JPA)
+### JPA (Java Persistence API)
+- Spring Data JPA
+- Hibernate
 
 ### Logging
 - SLF4J
 - Logback
+- Loggly - serviço de registro de log na nuvem
 
+### Validação de objetos
+- Bean Validation
+
+### Tratamento de exceções
+- Tratando exceções globais com `@ExceptionHandler` e `@ControllerAdvice`
+- Uso da especificação RFC 7807 da IETF para padronizar o formato de resposta com os detalhes do erro. Exemplo:
+  ```
+  {
+  "status": 400,
+  "type": "https://deliveryfood.com.br/recurso-em-uso",
+  "title": "Recurso em uso",
+  "detail": "Nao foi possível excluir a cozinha de código 5, porque ela está em uso”,
+  "instance": "/cozinhas/5/erros/43549831"
+  }
+  ```
+  - status -> indica o código de status HTTP gerado pelo servidor da API.
+    - Propriedade de conveniência, já que o status está  no cabeçalho da resposta. 
+  - type -> URI que identifica o tipo do problema
+  - title -> descreve o type, de forma legível para humanos
+  - detail -> descrição detalhada do erro específico, legíveis a humanos
+  - instance -> (opcional) pode ser infomado uma URI que identifica a ocorrencia exata, específica do erro retornado
+  - observação: pode haver mais propriedades, além das padrões, de acordo com a necessidade
 
 ## Docker Compose
 
